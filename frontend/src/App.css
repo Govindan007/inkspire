@@ -1,0 +1,122 @@
+#root {
+  margin: 0 ;
+  padding: 0;
+  
+}
+
+.logo {
+  height: 6em;
+  padding: 1.5em;
+  will-change: filter;
+  transition: filter 300ms;
+}
+.logo:hover {
+  filter: drop-shadow(0 0 2em #646cffaa);
+}
+.logo.react:hover {
+  filter: drop-shadow(0 0 2em #61dafbaa);
+}
+
+@keyframes logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  a:nth-of-type(2) .logo {
+    animation: logo-spin infinite 20s linear;
+  }
+}
+
+.card {
+  padding: 2em;
+}
+
+.read-the-docs {
+  color: #888;
+}
+
+.nav{
+  background-color: #ffffff;
+  box-shadow: #242424;
+  text-shadow: #1a1a1a;
+  border-bottom: 1px solid #ccc;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  font-weight: bolder;
+}
+
+#login{
+  text-decoration: underline;
+  font-weight: bold;
+  text-shadow: #242424;
+}
+#sign{
+  text-decoration: underline;
+  font-weight: bold;
+  text-shadow: #242424;
+}
+#typ{
+  font-weight: bolder;
+  text-shadow: #242424;
+}
+
+.heading{
+  display: flex;
+  justify-content: space-between;
+  padding: 0rem 5%;
+  height: '100vh';
+  align-items: center;
+  box-sizing: border-box;
+  font-family: 'cursive';
+  font-variant: inherit;
+  font-style: italic;
+  background-image: url('./assets/bg1.jpg');
+  line-break: 10rem;
+}
+.sub{
+  flex: 1;
+  max-width: 100%;
+  z-index: 2;
+}
+.subleft h1 {
+  font-size: xx-large;
+  font-weight: bold;
+  font-family: 'cursive';
+  font-family: 'Georgia', serif;
+  color: #000;
+  line-height: 1.2;
+  line-break: strict;
+}
+
+.sub p  {
+  font-size: 2rem;
+  color: #000;
+  font-family: cursive;
+  margin-top: 1rem;
+}
+
+.login{
+  place-content: center;
+  place-items: center;
+  box-shadow: #000;
+  padding: 100px;
+}
+
+#loginbutton{
+  text-align: center;
+}
+
+.signup{
+  place-content: center;
+  place-items: center;
+  box-shadow: #000;
+  padding: 100px;
+}
+
+#signupbutton{
+  text-align: center;
+}
