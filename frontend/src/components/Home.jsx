@@ -1,49 +1,117 @@
-import React from 'react'
-import AppBar from '@mui/material/AppBar';
-import Box from '@mui/material/Box';
-import Toolbar from '@mui/material/Toolbar';
-import Typography from '@mui/material/Typography';
-import Button from '@mui/material/Button';
-import IconButton from '@mui/material/IconButton';
-import MenuIcon from '@mui/icons-material/Menu';
-import { FormatUnderlined } from '@mui/icons-material';
-import { Link, useLocation } from 'react-router-dom';
+import React from 'react';
+import { Button, Typography, Grid, Card, CardContent } from '@mui/material';
+import { Link } from 'react-router-dom';
 import Navbar from './Navbar';
+import CreateIcon from '@mui/icons-material/Create';
+import SearchIcon from '@mui/icons-material/Search';
+import PeopleAltIcon from '@mui/icons-material/PeopleAlt';
+import LockIcon from '@mui/icons-material/Lock';
 
 
 const Home = () => {
-  const location = useLocation();
-
   return (
-    <div >
-      
-     {location.pathname === '/' && (
-    <div className='heading'>
-      <div className='sub'>
-      <h1>Ink The Internet<br/> With Your Ideas.....!</h1>
-      <p>
-       Where ideas begin, and revolutions follow.
-      </p>
-     </div>
-    </div>
-    )}
-    {location.pathname === '/' && (
-    
-    <div style={{padding: '2rem', background: '#f9f9f9', borderRadius: '12px', marginTop: '2rem'}}>
-        <hr/>
-      <Typography variant='h2' style={{fontSize: '40px', backgroundColor: 'white', color: 'black',
-         textAlign: 'center', fontFamily: "serif"}}>About</Typography>
-         <hr/>
-       <p style={{fontSize: '1.1rem', lineHeight: '1.6', fontWeight: 'normal', textAlign: 'center'}}>
-        Blog App — your space to discover stories, share ideas, and connect with a community of writers and readers. <br/>
-       Whether you're here to blog about your passion, follow your favorite topics, or simply explore something new, <br/>
-       our platform makes it easy and enjoyable.
-       </p>
-    </div> 
-    
-    )}
-    </div>
-  )
-}
+    <>
+      <Navbar />
 
-export default Home
+      {/* Hero Section */}
+      <div style={{
+        padding: '60px 20px',
+        display: 'flex',
+        justifyContent: 'center'
+      }}>
+        <div style={{
+          maxWidth: 1000,
+          textAlign: 'center',
+          backgroundColor: '#fff',
+          padding: '40px',
+          borderRadius: '12px',
+          boxShadow: '0 4px 16px rgba(0,0,0,0.05)'
+        }}>
+          <Typography variant="h4" style={{ fontWeight: 700, fontFamily: 'Work Sans' }}>
+            Welcome to <span style={{ color: '#000' }}>Inkspire</span>
+          </Typography>
+          <Typography style={{ marginTop: 10, color: '#666', fontSize: '18px' }}>
+            Where thoughts turn into words and words inspire the world.
+          </Typography>
+
+          <div style={{ marginTop: 30 }}>
+            <Link to="/l">
+              <Button variant="contained" sx={{ marginRight: 2, paddingX: 3, textTransform: 'none' }}>
+                Login to Explore
+              </Button>
+            </Link>
+            <Link to="/s">
+              <Button variant="outlined" sx={{ paddingX: 3, textTransform: 'none' }}>
+                Join Inkspire
+              </Button>
+            </Link>
+          </div>
+        </div>
+      </div>
+
+      {/* Why Inkspire Section */}
+      <div style={{ padding: '30px 20px', textAlign: 'center' }}>
+        <Typography variant="h5" style={{ fontWeight: 600, fontFamily: 'Work Sans', marginBottom: 30 }}>
+          Why Inkspire?
+        </Typography>
+
+        <Grid container spacing={3} justifyContent="center">
+          <Grid item xs={12} sm={6} md={3}>
+            <Card elevation={1} style={{ borderRadius: 12 }}>
+              <CardContent>
+                <CreateIcon style={{ fontSize: 32, marginBottom: 10 }} />
+                <Typography variant="subtitle1" fontWeight={600}>Write and publish your thoughts easily</Typography>
+                <Typography variant="body2" color="textSecondary">
+                  Share your ideas with the world effortlessly.
+                </Typography>
+              </CardContent>
+            </Card>
+          </Grid>
+
+          <Grid item xs={12} sm={6} md={3}>
+            <Card elevation={1} style={{ borderRadius: 12 }}>
+              <CardContent>
+                <SearchIcon style={{ fontSize: 32, marginBottom: 10 }} />
+                <Typography variant="subtitle1" fontWeight={600}>Discover meaningful blogs</Typography>
+                <Typography variant="body2" color="textSecondary">
+                  Explore a diverse range of insightful content.
+                </Typography>
+              </CardContent>
+            </Card>
+          </Grid> 
+
+          <Grid item xs={12} sm={6} md={3}>
+            <Card elevation={1} style={{ borderRadius: 12 }}>
+              <CardContent>
+                <PeopleAltIcon style={{ fontSize: 32, marginBottom: 10 }} />
+                <Typography variant="subtitle1" fontWeight={600}>Engage with like-minded readers</Typography>
+                <Typography variant="body2" color="textSecondary">
+                  Build relationships and interact with other readers.
+                </Typography>
+              </CardContent>
+            </Card>
+          </Grid>
+
+          <Grid item xs={12} sm={6} md={3}>
+            <Card elevation={1} style={{ borderRadius: 12 }}>
+              <CardContent>
+                <LockIcon style={{ fontSize: 32, marginBottom: 10 }} />
+                <Typography variant="subtitle1" fontWeight={600}>Safe and distraction-free</Typography>
+                <Typography variant="body2" color="textSecondary">
+                  Focus on your writing without interruptions.
+                </Typography>
+              </CardContent>
+            </Card>
+          </Grid>
+        </Grid>
+      </div>
+
+      {/* Footer */}
+      <div style={{ backgroundColor: '#f9f9f9', padding: '20px 0', textAlign: 'center', color: '#888', fontSize: 14 }}>
+        <div>© 2025 Inkspire. All rights reserved.</div>
+      </div>
+    </>
+  );
+};
+
+export default Home;

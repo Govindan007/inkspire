@@ -1,10 +1,12 @@
-var mongoose = require("mongoose");
-// mongoose.connect("uri").then(()=>{}).catch(()=>{})
-    var url=process.env.mongodb_url;
+const mongoose = require("mongoose");
+require("dotenv").config(); // make sure to load .env file
+
+const url = process.env.MONGO_URI; // match this with your .env key
+
 mongoose.connect(url)
-    .then(()=>{
-        console.log("db connected")
-    })
-    .catch((error)=>{
-        console.log(error);
-    })
+  .then(() => {
+    console.log("✅ MongoDB connected");
+  })
+  .catch((error) => {
+    console.error("❌ MongoDB connection error:", error);
+  });

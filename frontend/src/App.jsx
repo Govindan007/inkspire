@@ -6,8 +6,8 @@ import Login from './components/Login'
 import { Routes, Route, Router } from 'react-router-dom'
 import Signup from './components/Signup'
 import Dashboard from './components/Dashboard'
-import { BrowserRouter } from 'react-router-dom'
-import Navbar from './components/Navbar'
+import Blog from './components/Blog'
+
 
 
 
@@ -17,11 +17,13 @@ function App() {
 
   return (
     <>
-      <Home/>
       <Routes>
+        <Route path='/' element={<Home/>}/>
         <Route path='/l' element={<Login/>}/>
         <Route path='/s' element={<Signup/>}/>
         <Route path='/d' element={<Dashboard/>}/>
+        <Route path='/b' element={<Blog/>}/>
+
       </Routes>
     </>
   )
