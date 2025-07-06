@@ -8,30 +8,15 @@ import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
 import { FormatUnderlined } from '@mui/icons-material';
 import { Link, useLocation } from 'react-router-dom';
+import Navbar from './Navbar';
+
 
 const Home = () => {
   const location = useLocation();
 
   return (
     <div >
-      <Box className='nav' sx={{ flexGrow: 1 }}>
-      <AppBar position="static" style={{backgroundColor:'white'}} >
-        <Toolbar>
-          <IconButton edge="start">
-            <img src="favicon.svg" alt='Blog App Logo' style={{height:32}}/>
-          </IconButton>
-          <Typography id='typ'variant="h6" component="div" sx={{ flexGrow: 1 }} color='black'>
-            Blog
-          </Typography>
-          <Link to={'/l'}>
-          <Button id='login' color="inherit" style={{color:'black'}}>
-            Login</Button></Link>
-            <Link to={'/s'}>
-          <Button id = 'sign' color="inherit" style={{color:'black'}} >Sign-up</Button></Link>
-        </Toolbar>
-      </AppBar>
-    </Box>
-
+      
      {location.pathname === '/' && (
     <div className='heading'>
       <div className='sub'>
@@ -55,6 +40,7 @@ const Home = () => {
        our platform makes it easy and enjoyable.
        </p>
     </div> 
+    
     )}
     </div>
   )

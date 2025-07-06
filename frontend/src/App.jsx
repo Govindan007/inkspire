@@ -6,6 +6,8 @@ import Login from './components/Login'
 import { Routes, Route, Router } from 'react-router-dom'
 import Signup from './components/Signup'
 import Dashboard from './components/Dashboard'
+import { BrowserRouter } from 'react-router-dom'
+import Navbar from './components/Navbar'
 
 
 

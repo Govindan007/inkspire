@@ -2,6 +2,7 @@ import { Button, TextField, Typography } from '@mui/material'
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import axios from 'axios';
+import Navbar from './Navbar';
 
 const Login = () => {
   var navigate = useNavigate()
@@ -32,12 +33,41 @@ const Login = () => {
 
   
   return (
-    <div className='login'style={{textAlign: 'center'}}>
-      <Typography variant='h3'style={{fontFamily:'serif'}}>Login</Typography><br /><br />
-      <TextField variant='outlined' placeholder='Username' type='email' name="email" value={inp.email} onChange={inputHandler}></TextField><br /><br />
-      <TextField variant='outlined' placeholder='Password' type='password' name="password" value={inp.password} onChange={inputHandler}></TextField><br /><br />
-      <Button id='loginbutton' variant='contained' sx={{ mt: 2}}style={{textAlign:'center'}} onClick={submitHandler}>Login</Button>
-    </div>
+    <>
+      <Navbar />
+      <div className='login' style={{ textAlign: 'center' }}>
+        <Typography variant='h4' style={{ fontFamily: 'Work Sans', fontWeight: 600 }}>
+          Welcome back.
+        </Typography>
+        <br /><br />
+        <TextField
+          variant='outlined'
+          placeholder='Username'
+          type='email'
+          name="email"
+          value={inp.email}
+          onChange={inputHandler}
+        />
+        <br /><br />
+        <TextField
+          variant='outlined'
+          placeholder='Password'
+          type='password'
+          name="password"
+          value={inp.password}
+          onChange={inputHandler}
+        />
+        <br /><br />
+        <Button
+          id='loginbutton'
+          variant='contained'
+          sx={{ mt: 2, fontFamily: 'Work Sans' }}
+          onClick={submitHandler}
+        >
+          Login
+        </Button>
+      </div>
+    </>
   )
 }
 
