@@ -30,7 +30,9 @@ exports.login = async (req, res) => {
     if (!isMatch) return res.status(400).json({ message: "Wrong password" });
 
     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET);
-    res.json({ message: "Login success", token, user });
+    // controllers/authController.js
+    res.json({ message: "Login success", user: { email: user.email, role: user.role } });
+     
   } catch (err) {
     console.error("❌ Login error:", err);
     res.status(500).json({ message: "Login error" });
