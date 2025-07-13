@@ -6,24 +6,31 @@ import Navbar from './Navbar';
 import { Link } from 'react-router-dom';
 
 const Login = () => {
-  var navigate = useNavigate();
+  const navigate = useNavigate();
 
-  var [inp, setInp] = useState({ email: "", password: "" });
+  const [inp, setInp] = useState({ email: "", password: "" });
+
   const inputHandler = (e) => {
     setInp({ ...inp, [e.target.name]: e.target.value });
   };
 
   const submitHandler = async () => {
     try {
-      const res = await axios.post("http://localhost:3004/l", {
+      const res = await axios.post("http://localhost:3004/auth/login", {
         email: inp.email,
         password: inp.password
       });
-      if (res.data.success) {
+
+      if (res.data.token) { // ✅ Check for token to confirm success
         alert("Login successful");
-        navigate("/d");
+
+        // Save token and user info
+        localStorage.setItem("token", res.data.token);
+        localStorage.setItem("user", JSON.stringify(res.data.user));
+
+        navigate("/d"); // ✅ Redirect to dashboard
       } else {
-        alert(res.data.message);
+        alert(res.data.message || "Login failed.");
       }
     } catch (err) {
       alert("Login failed: " + (err.response?.data?.message || err.message));
@@ -32,7 +39,7 @@ const Login = () => {
 
   return (
     <>
-    <Navbar/>
+      <Navbar />
       <div
         style={{
           minHeight: '100vh',
@@ -108,7 +115,7 @@ const Login = () => {
           <Typography style={{ marginTop: 20, textAlign: 'center', fontSize: '14px', color: '#555' }}>
             No account?{' '}
             <Link to="/s" style={{ color: '#007bff', textDecoration: 'none', fontWeight: 500 }}>
-              signup.
+              Signup.
             </Link>
           </Typography>
         </div>

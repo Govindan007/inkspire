@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Box,
   Typography,
@@ -16,30 +16,39 @@ import { useNavigate } from 'react-router-dom';
 const Profile = () => {
   const navigate = useNavigate();
 
-  // Sample blog post data
+  const [user, setUser] = useState(null);
   const [posts, setPosts] = useState([
     {
       _id: '1',
       title: 'The Future of Sustainable Living',
       description:
         'Exploring eco-friendly practices and technologies that are shaping a greener tomorrow.',
-      image: 'blog1.jpg', // Replace with your actual image path
+      image: 'blog1.jpg',
     },
     {
       _id: '2',
       title: 'Mastering the Art of Digital Photography',
       description:
         'Tips and techniques for capturing stunning images with your digital camera, from composition to post-processing.',
-      image: 'Blog 3.jpg', // Replace with your actual image path
+      image: 'Blog 3.jpg',
     },
     {
       _id: '3',
       title: 'The Ultimate Guide to Home Brewing',
       description:
         'Learn the basics of brewing your own beer at home, from selecting ingredients to bottling your final product.',
-      image: 'Blog1.jpg', // Replace with your actual image path
+      image: 'Blog1.jpg',
     },
   ]);
+
+  useEffect(() => {
+    const storedUser = localStorage.getItem("user");
+    if (storedUser) {
+      setUser(JSON.parse(storedUser));
+    } else {
+      navigate('/l'); // Redirect to login if not logged in
+    }
+  }, [navigate]);
 
   const handleEdit = (post) => {
     navigate('/a', { state: post });
@@ -50,9 +59,8 @@ const Profile = () => {
     if (!confirm) return;
 
     try {
-      // Replace with your actual backend endpoint
       // await axios.delete(`http://localhost:3004/blogs/${id}`);
-      setPosts(posts.filter((post) => post._id !== id)); // Remove from UI
+      setPosts(posts.filter((post) => post._id !== id));
       alert('Post deleted successfully');
     } catch (error) {
       console.error('Delete error:', error);
@@ -60,25 +68,31 @@ const Profile = () => {
     }
   };
 
+  const handleLogout = () => {
+    localStorage.removeItem("user");
+    localStorage.removeItem("token");
+    navigate('/l');
+  };
+
   return (
     <>
       <Navbar2 />
 
       <Box sx={{ maxWidth: 1000, mx: 'auto', pt: '100px', px: 3 }}>
-        {/* Profile Header */}
         <Box sx={{ textAlign: 'center', mb: 5 }}>
           <Avatar
-            src="mathew.jpg" // ✅ Your local or online image path
-            alt="Mathew Joseph"
+            src="mathew.jpg"
+            alt={user?.email || "User"}
             sx={{ width: 100, height: 100, mx: 'auto', mb: 2 }}
           />
           <Typography variant="h5" fontWeight="bold">
-            Mathew Joseph
+            {user?.name || "Anonymous User"}
           </Typography>
-          <Typography color="text.secondary">mathewjoseph3831v@gmail.com</Typography>
+          <Typography color="text.secondary">
+            {user?.email}
+          </Typography>
         </Box>
 
-        {/* Post List */}
         <Typography variant="h6" fontWeight="bold" gutterBottom>
           Your Posts
         </Typography>
@@ -140,9 +154,8 @@ const Profile = () => {
           </Card>
         ))}
 
-        {/* Logout Button */}
         <Box textAlign="center" mt={4}>
-          <Button variant="contained" color="secondary">
+          <Button variant="contained" color="secondary" onClick={handleLogout}>
             Logout
           </Button>
         </Box>

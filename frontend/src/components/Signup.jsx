@@ -4,7 +4,6 @@ import { useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
 import Navbar from './Navbar';
 
-
 const Signup = () => {
   const navigate = useNavigate();
   const [inp, setInp] = useState({ email: "", password: "" });
@@ -21,37 +20,17 @@ const Signup = () => {
     }
 
     try {
-      const check = await axios.post("http://localhost:3004/l", {
-        email: inp.email,
-        password: inp.password
-      });
-
-      if (check.data.success) {
-        alert("User already exists. Please log in.");
-        setInp({ email: "", password: "" });
-        setPass("");
-        return;
-      }
-    } catch (err) {
-      if (err.response?.data?.message !== "User not found") {
-        alert("Something went wrong while checking user.");
-        return;
-      }
+      const res = await axios.post("http://localhost:3004/auth/signup", inp);
+      alert(res.data.message || "Signup successful!");
+      navigate("/d"); // redirect to login
+    } catch (error) {
+      alert(error.response?.data?.message || "Signup failed.");
     }
-
-    axios.post('http://localhost:3004/s', inp)
-      .then((res) => {
-        alert(res.data);
-        navigate("/d");
-      })
-      .catch((err) => {
-        console.log(err);
-      });
   };
 
   return (
     <>
-    <Navbar/>
+      <Navbar />
       <div
         style={{
           minHeight: '100vh',
@@ -67,86 +46,49 @@ const Signup = () => {
             Join Inkspire.
           </Typography>
 
-          <div style={{ marginBottom: 20 }}>
-            <Typography align="left" style={{ fontWeight: 500, marginBottom: 5 }}>Email</Typography>
-            <TextField
-              fullWidth
-              variant='outlined'
-              placeholder='Your email'
-              type='email'
-              name="email"
-              value={inp.email}
-              onChange={inputHandler}
-              InputProps={{
-                style: {
-                  borderRadius: 10,
-                  backgroundColor: '#fff'
-                }
-              }}
-            />
-          </div>
-
-          <div style={{ marginBottom: 20 }}>
-            <Typography align="left" style={{ fontWeight: 500, marginBottom: 5 }}>Password</Typography>
-            <TextField
-              fullWidth
-              variant='outlined'
-              placeholder='Your password'
-              type='password'
-              name="password"
-              value={inp.password}
-              onChange={inputHandler}
-              InputProps={{
-                style: {
-                  borderRadius: 10,
-                  backgroundColor: '#fff'
-                }
-              }}
-            />
-          </div>
-
-          <div style={{ marginBottom: 30 }}>
-            <Typography align="left" style={{ fontWeight: 500, marginBottom: 5 }}>Confirm Password</Typography>
-            <TextField
-              fullWidth
-              variant='outlined'
-              placeholder='Confirm your password'
-              type='password'
-              name="pass"
-              value={pass}
-              onChange={(e) => setPass(e.target.value)}
-              InputProps={{
-                style: {
-                  borderRadius: 10,
-                  backgroundColor: '#fff'
-                }
-              }}
-            />
-          </div>
+          <TextField
+            fullWidth
+            label="Email"
+            name="email"
+            value={inp.email}
+            onChange={inputHandler}
+            margin="normal"
+            variant="outlined"
+            type="email"
+          />
+          <TextField
+            fullWidth
+            label="Password"
+            name="password"
+            value={inp.password}
+            onChange={inputHandler}
+            margin="normal"
+            variant="outlined"
+            type="password"
+          />
+          <TextField
+            fullWidth
+            label="Confirm Password"
+            value={pass}
+            onChange={(e) => setPass(e.target.value)}
+            margin="normal"
+            variant="outlined"
+            type="password"
+          />
 
           <Button
-            id='signupbutton'
-            variant='contained'
+            variant="contained"
             fullWidth
+            sx={{ mt: 2, py: 1, fontWeight: 600 }}
             onClick={submitHandler}
-            sx={{
-              borderRadius: '8px',
-              paddingY: '10px',
-              fontWeight: 600,
-              fontSize: '15px',
-              background: '#007bff',
-              boxShadow: '0px 3px 6px rgba(0,0,0,0.1)',
-              textTransform: 'none',
-              fontFamily: 'Work Sans'
-            }}
           >
-            Sign up
+            Sign Up
           </Button>
 
-          <Typography style={{ marginTop: 20, textAlign: 'center', fontSize: '14px', color: '#555' }}>
-            Already have an account?{' '}
-            <Link to="/l" style={{ color: '#007bff', textDecoration: 'none', fontWeight: 500 }}>
-              Log in.
+          <Typography align="center" sx={{ mt: 2 }}>
+            Already have an account?{" "}
+            <Link to="/login" style={{ color: '#007bff', fontWeight: 500 }}>
+              Log in
             </Link>
           </Typography>
         </div>
