@@ -22,7 +22,7 @@ const Signup = () => {
     try {
       const res = await axios.post("http://localhost:3004/auth/signup", inp);
       alert(res.data.message || "Signup successful!");
-      navigate("/d"); // redirect to login
+      navigate("/d");
     } catch (error) {
       alert(error.response?.data?.message || "Signup failed.");
     }
@@ -31,65 +31,20 @@ const Signup = () => {
   return (
     <>
       <Navbar />
-      <div
-        style={{
-          minHeight: '100vh',
-          backgroundColor: '#f5f8fa',
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          fontFamily: 'Work Sans'
-        }}
-      >
+      <div style={{ minHeight: '100vh', backgroundColor: '#f5f8fa', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
         <div style={{ width: '100%', maxWidth: 400, padding: 20 }}>
           <Typography variant='h5' style={{ fontWeight: 700, marginBottom: 30, textAlign: 'center' }}>
             Join Inkspire.
           </Typography>
 
-          <TextField
-            fullWidth
-            label="Email"
-            name="email"
-            value={inp.email}
-            onChange={inputHandler}
-            margin="normal"
-            variant="outlined"
-            type="email"
-          />
-          <TextField
-            fullWidth
-            label="Password"
-            name="password"
-            value={inp.password}
-            onChange={inputHandler}
-            margin="normal"
-            variant="outlined"
-            type="password"
-          />
-          <TextField
-            fullWidth
-            label="Confirm Password"
-            value={pass}
-            onChange={(e) => setPass(e.target.value)}
-            margin="normal"
-            variant="outlined"
-            type="password"
-          />
+          <TextField fullWidth label="Email" name="email" value={inp.email} onChange={inputHandler} margin="normal" variant="outlined" type="email" />
+          <TextField fullWidth label="Password" name="password" value={inp.password} onChange={inputHandler} margin="normal" variant="outlined" type="password" />
+          <TextField fullWidth label="Confirm Password" value={pass} onChange={(e) => setPass(e.target.value)} margin="normal" variant="outlined" type="password" />
 
-          <Button
-            variant="contained"
-            fullWidth
-            sx={{ mt: 2, py: 1, fontWeight: 600 }}
-            onClick={submitHandler}
-          >
-            Sign Up
-          </Button>
+          <Button variant="contained" fullWidth sx={{ mt: 2, py: 1, fontWeight: 600 }} onClick={submitHandler}>Sign Up</Button>
 
           <Typography align="center" sx={{ mt: 2 }}>
-            Already have an account?{" "}
-            <Link to="/login" style={{ color: '#007bff', fontWeight: 500 }}>
-              Log in
-            </Link>
+            Already have an account? <Link to="/l">Log in</Link>
           </Typography>
         </div>
       </div>

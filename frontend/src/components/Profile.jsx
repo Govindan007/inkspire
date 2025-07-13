@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Box,
   Typography,
@@ -15,38 +15,15 @@ import { useNavigate } from 'react-router-dom';
 
 const Profile = () => {
   const navigate = useNavigate();
-
   const [user, setUser] = useState(null);
-  const [posts, setPosts] = useState([
-    {
-      _id: '1',
-      title: 'The Future of Sustainable Living',
-      description:
-        'Exploring eco-friendly practices and technologies that are shaping a greener tomorrow.',
-      image: 'blog1.jpg',
-    },
-    {
-      _id: '2',
-      title: 'Mastering the Art of Digital Photography',
-      description:
-        'Tips and techniques for capturing stunning images with your digital camera, from composition to post-processing.',
-      image: 'Blog 3.jpg',
-    },
-    {
-      _id: '3',
-      title: 'The Ultimate Guide to Home Brewing',
-      description:
-        'Learn the basics of brewing your own beer at home, from selecting ingredients to bottling your final product.',
-      image: 'Blog1.jpg',
-    },
-  ]);
+  const [posts, setPosts] = useState([]); // Replace with fetched posts if needed
 
   useEffect(() => {
-    const storedUser = localStorage.getItem("user");
+    const storedUser = JSON.parse(localStorage.getItem("user"));
     if (storedUser) {
-      setUser(JSON.parse(storedUser));
+      setUser(storedUser);
     } else {
-      navigate('/l'); // Redirect to login if not logged in
+      navigate("/l");
     }
   }, [navigate]);
 
@@ -54,43 +31,31 @@ const Profile = () => {
     navigate('/a', { state: post });
   };
 
-  const handleDelete = async (id) => {
-    const confirm = window.confirm('Are you sure you want to delete this post?');
+  const handleDelete = (id) => {
+    const confirm = window.confirm("Are you sure?");
     if (!confirm) return;
-
-    try {
-      // await axios.delete(`http://localhost:3004/blogs/${id}`);
-      setPosts(posts.filter((post) => post._id !== id));
-      alert('Post deleted successfully');
-    } catch (error) {
-      console.error('Delete error:', error);
-      alert('Failed to delete post');
-    }
+    setPosts(posts.filter((p) => p._id !== id));
   };
 
   const handleLogout = () => {
-    localStorage.removeItem("user");
-    localStorage.removeItem("token");
+    localStorage.clear();
     navigate('/l');
   };
 
   return (
     <>
       <Navbar2 />
-
       <Box sx={{ maxWidth: 1000, mx: 'auto', pt: '100px', px: 3 }}>
         <Box sx={{ textAlign: 'center', mb: 5 }}>
           <Avatar
-            src="mathew.jpg"
-            alt={user?.email || "User"}
-            sx={{ width: 100, height: 100, mx: 'auto', mb: 2 }}
+            src="/mathew.jpg"
+            alt="User Avatar"
+            sx={{ width: 100, height: 100, mx: 'auto', mb: 1 }}
           />
           <Typography variant="h5" fontWeight="bold">
-            {user?.name || "Anonymous User"}
+            Welcome!
           </Typography>
-          <Typography color="text.secondary">
-            {user?.email}
-          </Typography>
+          <Typography color="text.secondary">{user?.email}</Typography>
         </Box>
 
         <Typography variant="h6" fontWeight="bold" gutterBottom>
@@ -98,59 +63,20 @@ const Profile = () => {
         </Typography>
 
         {posts.map((post) => (
-          <Card
-            key={post._id}
-            sx={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              mb: 3,
-              boxShadow: 2,
-              borderRadius: 3,
-              p: 2,
-            }}
-          >
-            <Box sx={{ flex: 1 }}>
-              <Typography variant="subtitle1" fontWeight="bold">
-                {post.title}
-              </Typography>
-              <Typography variant="body2" color="text.secondary" mt={0.5}>
-                {post.description}
-              </Typography>
-
+          <Card key={post._id} sx={{ display: 'flex', justifyContent: 'space-between', mb: 3, borderRadius: 3, p: 2, boxShadow: 2 }}>
+            <Box>
+              <Typography fontWeight="bold">{post.title}</Typography>
+              <Typography variant="body2" color="text.secondary">{post.description}</Typography>
               <Stack direction="row" spacing={1} mt={2}>
-                <Button
-                  variant="outlined"
-                  size="small"
-                  startIcon={<EditIcon />}
-                  onClick={() => handleEdit(post)}
-                >
+                <Button variant="outlined" startIcon={<EditIcon />} onClick={() => handleEdit(post)}>
                   Edit
                 </Button>
-                <Button
-                  variant="outlined"
-                  color="error"
-                  size="small"
-                  startIcon={<DeleteIcon />}
-                  onClick={() => handleDelete(post._id)}
-                >
+                <Button variant="outlined" color="error" startIcon={<DeleteIcon />} onClick={() => handleDelete(post._id)}>
                   Delete
                 </Button>
               </Stack>
             </Box>
-
-            <CardMedia
-              component="img"
-              height="120"
-              image={post.image}
-              alt={post.title}
-              sx={{
-                width: 180,
-                borderRadius: 2,
-                ml: 2,
-                objectFit: 'cover',
-              }}
-            />
+            <CardMedia component="img" height="120" image={post.image} alt={post.title} sx={{ width: 180, ml: 2, borderRadius: 2 }} />
           </Card>
         ))}
 

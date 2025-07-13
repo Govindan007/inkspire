@@ -30,6 +30,8 @@ function App() {
         <Route path='/b' element={<Blog/>}/>
         <Route path='/a' element={<AddBlog/>}/>
         <Route path='/Profile' element={<Profile/>}/>
+        <Route path='/@:username' element={<Profile />} />
+
         
 
       </Routes>
