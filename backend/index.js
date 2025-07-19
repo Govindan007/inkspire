@@ -12,6 +12,21 @@ app.use(cors());
 
 var port=3004;
 
+app.post("/check", async (req, res) => {
+  const { email } = req.body;
+  try {
+    const existingUser = await signin.findOne({ email });
+    if (existingUser) {
+      return res.json({ exists: true });
+    } else {
+      return res.json({ exists: false });
+    }
+  } catch (err) {
+    res.status(500).json({ error: "Server error while checking user" });
+  }
+});
+
+
 app.post('/s',(req,res)=>{
     try {
         signin(req.body).save();

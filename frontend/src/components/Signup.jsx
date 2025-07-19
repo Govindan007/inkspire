@@ -4,7 +4,6 @@ import { useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
 import Navbar from './Navbar';
 
-
 const Signup = () => {
   const navigate = useNavigate();
   const [inp, setInp] = useState({ email: "", password: "" });
@@ -21,24 +20,24 @@ const Signup = () => {
     }
 
     try {
-      const check = await axios.post("http://localhost:3004/l", {
+      // Check if user already exists
+      const check = await axios.post("http://localhost:3004/check", {
         email: inp.email,
-        password: inp.password
       });
 
-      if (check.data.success) {
+      if (check.data.exists) {
         alert("User already exists. Please log in.");
         setInp({ email: "", password: "" });
         setPass("");
         return;
       }
     } catch (err) {
-      if (err.response?.data?.message !== "User not found") {
-        alert("Something went wrong while checking user.");
-        return;
-      }
+      alert("Something went wrong while checking user.");
+      console.log(err);
+      return;
     }
 
+    // Proceed with signup
     axios.post('http://localhost:3004/s', inp)
       .then((res) => {
         alert(res.data);
@@ -46,12 +45,13 @@ const Signup = () => {
       })
       .catch((err) => {
         console.log(err);
+        alert("Error during signup.");
       });
   };
 
   return (
     <>
-    <Navbar/>
+      <Navbar />
       <div
         style={{
           minHeight: '100vh',

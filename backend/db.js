@@ -1,7 +1,8 @@
+require("dotenv").config();
 const mongoose = require("mongoose");
-require("dotenv").config(); // make sure to load .env file
 
-const url = process.env.mongodb_url; // match this with your .env key
+const url = process.env.mongodb_url;
+console.log("Connecting to MongoDB URL:", url); // 👈 Add this
 
 mongoose.connect(url)
   .then(() => {
