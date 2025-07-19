@@ -6,24 +6,25 @@ import Navbar from './Navbar';
 import { Link } from 'react-router-dom';
 
 const Login = () => {
-  var navigate = useNavigate();
+  const navigate = useNavigate();
 
-  var [inp, setInp] = useState({ email: "", password: "" });
+  const [inp, setInp] = useState({ email: "", password: "" });
+
   const inputHandler = (e) => {
     setInp({ ...inp, [e.target.name]: e.target.value });
   };
 
   const submitHandler = async () => {
     try {
-      const res = await axios.post("http://localhost:3004/l", {
-        email: inp.email,
-        password: inp.password
-      });
-      if (res.data.success) {
+      const res = await axios.post("http://localhost:3004/auth/login", inp);
+
+      if (res.data.token) {
         alert("Login successful");
+        localStorage.setItem("token", res.data.token);
+        localStorage.setItem("user", JSON.stringify(res.data.user));
         navigate("/d");
       } else {
-        alert(res.data.message);
+        alert(res.data.message || "Login failed.");
       }
     } catch (err) {
       alert("Login failed: " + (err.response?.data?.message || err.message));
@@ -32,84 +33,20 @@ const Login = () => {
 
   return (
     <>
-    <Navbar/>
-      <div
-        style={{
-          minHeight: '100vh',
-          backgroundColor: '#f5f8fa',
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          fontFamily: 'Work Sans'
-        }}
-      >
+      <Navbar />
+      <div style={{ minHeight: '100vh', backgroundColor: '#f5f8fa', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
         <div style={{ width: '100%', maxWidth: 400, padding: 20 }}>
           <Typography variant='h5' style={{ fontWeight: 700, marginBottom: 30, textAlign: 'center' }}>
             Welcome back.
           </Typography>
 
-          <div style={{ marginBottom: 20 }}>
-            <Typography align="left" style={{ fontWeight: 500, marginBottom: 5 }}>Email</Typography>
-            <TextField
-              fullWidth
-              variant='outlined'
-              placeholder='Your email'
-              type='email'
-              name="email"
-              value={inp.email}
-              onChange={inputHandler}
-              InputProps={{
-                style: {
-                  borderRadius: 10,
-                  backgroundColor: '#fff'
-                }
-              }}
-            />
-          </div>
+          <TextField fullWidth label="Email" name="email" value={inp.email} onChange={inputHandler} margin="normal" variant="outlined" type="email" />
+          <TextField fullWidth label="Password" name="password" value={inp.password} onChange={inputHandler} margin="normal" variant="outlined" type="password" />
 
-          <div style={{ marginBottom: 30 }}>
-            <Typography align="left" style={{ fontWeight: 500, marginBottom: 5 }}>Password</Typography>
-            <TextField
-              fullWidth
-              variant='outlined'
-              placeholder='Your password'
-              type='password'
-              name="password"
-              value={inp.password}
-              onChange={inputHandler}
-              InputProps={{
-                style: {
-                  borderRadius: 10,
-                  backgroundColor: '#fff'
-                }
-              }}
-            />
-          </div>
+          <Button variant='contained' fullWidth onClick={submitHandler} sx={{ mt: 2 }}>Log in</Button>
 
-          <Button
-            id='loginbutton'
-            variant='contained'
-            fullWidth
-            onClick={submitHandler}
-            sx={{
-              borderRadius: '8px',
-              paddingY: '10px',
-              fontWeight: 600,
-              fontSize: '15px',
-              background: '#007bff',
-              boxShadow: '0px 3px 6px rgba(0,0,0,0.1)',
-              textTransform: 'none',
-              fontFamily: 'Work Sans'
-            }}
-          >
-            Log in
-          </Button>
-
-          <Typography style={{ marginTop: 20, textAlign: 'center', fontSize: '14px', color: '#555' }}>
-            No account?{' '}
-            <Link to="/s" style={{ color: '#007bff', textDecoration: 'none', fontWeight: 500 }}>
-              signup.
-            </Link>
+          <Typography align="center" sx={{ mt: 2 }}>
+            No account? <Link to="/s">Signup</Link>
           </Typography>
         </div>
       </div>

@@ -1,14 +1,11 @@
-var express=require("express");
-var dotenv=require('dotenv')
-dotenv.config()
+const express = require("express");
+const mongoose = require("mongoose");
+const cors = require("cors");
+require("dotenv").config();
 
-require("./db");
-var signin = require("./model")
-var cors=require("cors");
-
-var app = express();
-app.use(express.json());
+const app = express();
 app.use(cors());
+<<<<<<< HEAD
 
 var port=3004;
 
@@ -66,8 +63,18 @@ app.post("/l",async(req,res)=>{
         res.status(500).json({ success: false, message: "Server error" });
     }
 });
+=======
+app.use(express.json());
+app.use("/admin", require("./routes/adminRoutes"));
+>>>>>>> 1d59e6172d2f0b7a080d4d82aba4226bd1c2626a
 
 
-app.listen(port,()=>{
-    console.log(`server is running in ${port}`);
-});
+mongoose.connect(process.env.MONGO_URI)
+  .then(() => console.log("✅ MongoDB Connected"))
+  .catch(err => console.error("❌ DB Connection Error:", err));
+
+const authRoutes = require("./routes/authRoutes");
+app.use("/auth", authRoutes);
+
+const PORT = process.env.PORT || 3004;
+app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));

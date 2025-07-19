@@ -1,5 +1,13 @@
 import React from 'react';
-import { Button, Typography, Grid, Card, CardContent } from '@mui/material';
+import {
+  Box,
+  Typography,
+  Button,
+  Grid,
+  Card,
+  CardContent,
+  Zoom,
+} from '@mui/material';
 import { Link } from 'react-router-dom';
 import Navbar from './Navbar';
 import CreateIcon from '@mui/icons-material/Create';
@@ -7,6 +15,28 @@ import SearchIcon from '@mui/icons-material/Search';
 import PeopleAltIcon from '@mui/icons-material/PeopleAlt';
 import LockIcon from '@mui/icons-material/Lock';
 
+const features = [
+  {
+    title: 'Write Freely',
+    description: 'Express your thoughts and publish with ease.',
+    icon: <CreateIcon sx={{ fontSize: 40, color: '#ff7043' }} />,
+  },
+  {
+    title: 'Discover Blogs',
+    description: 'Explore meaningful and inspiring blogs.',
+    icon: <SearchIcon sx={{ fontSize: 40, color: '#42a5f5' }} />,
+  },
+  {
+    title: 'Connect & Engage',
+    description: 'Build a community with like-minded readers.',
+    icon: <PeopleAltIcon sx={{ fontSize: 40, color: '#66bb6a' }} />,
+  },
+  {
+    title: 'Safe Platform',
+    description: 'Your data and content are protected.',
+    icon: <LockIcon sx={{ fontSize: 40, color: '#ab47bc' }} />,
+  },
+];
 
 const Home = () => {
   return (
@@ -14,102 +44,127 @@ const Home = () => {
       <Navbar />
 
       {/* Hero Section */}
-      <div style={{
-        padding: '60px 20px',
-        display: 'flex',
-        justifyContent: 'center'
-      }}>
-        <div style={{
-          maxWidth: 1000,
+      <Box
+        sx={{
+          minHeight: '90vh',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          px: 3,
           textAlign: 'center',
-          backgroundColor: '#fff',
-          padding: '40px',
-          borderRadius: '12px',
-          boxShadow: '0 4px 16px rgba(0,0,0,0.05)'
-        }}>
-          <Typography variant="h4" style={{ fontWeight: 700, fontFamily: 'Work Sans' }}>
-            Welcome to <span style={{ color: '#000' }}>Inkspire</span>
+          background:
+            'linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%)',
+        }}
+      >
+        <Box maxWidth="800px">
+          <Typography variant="h3" fontWeight={700} gutterBottom>
+            Welcome to <span style={{ color: '#3f51b5' }}>Inkspire</span>
           </Typography>
-          <Typography style={{ marginTop: 10, color: '#666', fontSize: '18px' }}>
-            Where thoughts turn into words and words inspire the world.
+          <Typography variant="h6" color="text.secondary">
+            Where thoughts become words, and words inspire the world.
           </Typography>
 
-          <div style={{ marginTop: 30 }}>
+          <Box mt={4}>
             <Link to="/l">
-              <Button variant="contained" sx={{ marginRight: 2, paddingX: 3, textTransform: 'none' }}>
+              <Button
+                variant="contained"
+                sx={{
+                  mr: 2,
+                  px: 4,
+                  py: 1.5,
+                  fontWeight: 600,
+                  textTransform: 'none',
+                  backgroundColor: '#3f51b5',
+                  '&:hover': { backgroundColor: '#303f9f' },
+                }}
+              >
                 Login to Explore
               </Button>
             </Link>
             <Link to="/s">
-              <Button variant="outlined" sx={{ paddingX: 3, textTransform: 'none' }}>
+              <Button
+                variant="outlined"
+                sx={{
+                  px: 4,
+                  py: 1.5,
+                  fontWeight: 600,
+                  textTransform: 'none',
+                  color: '#3f51b5',
+                  borderColor: '#3f51b5',
+                  '&:hover': {
+                    backgroundColor: '#e8eaf6',
+                  },
+                }}
+              >
                 Join Inkspire
               </Button>
             </Link>
-          </div>
-        </div>
-      </div>
+          </Box>
+        </Box>
+      </Box>
 
       {/* Why Inkspire Section */}
-      <div style={{ padding: '30px 20px', textAlign: 'center' }}>
-        <Typography variant="h5" style={{ fontWeight: 600, fontFamily: 'Work Sans', marginBottom: 30 }}>
-          Why Inkspire?
+      <Box sx={{ py: 8, backgroundColor: '#fafafa', px: 4 }}>
+        <Typography
+          variant="h4"
+          textAlign="center"
+          fontWeight={600}
+          mb={6}
+        >
+          Why Choose Inkspire?
         </Typography>
-
-        <Grid container spacing={3} justifyContent="center">
-          <Grid item xs={12} sm={6} md={3}>
-            <Card elevation={1} style={{ borderRadius: 12 }}>
-              <CardContent>
-                <CreateIcon style={{ fontSize: 32, marginBottom: 10 }} />
-                <Typography variant="subtitle1" fontWeight={600}>Write and publish your thoughts easily</Typography>
-                <Typography variant="body2" color="textSecondary">
-                  Share your ideas with the world effortlessly.
-                </Typography>
-              </CardContent>
-            </Card>
-          </Grid>
-
-          <Grid item xs={12} sm={6} md={3}>
-            <Card elevation={1} style={{ borderRadius: 12 }}>
-              <CardContent>
-                <SearchIcon style={{ fontSize: 32, marginBottom: 10 }} />
-                <Typography variant="subtitle1" fontWeight={600}>Discover meaningful blogs</Typography>
-                <Typography variant="body2" color="textSecondary">
-                  Explore a diverse range of insightful content.
-                </Typography>
-              </CardContent>
-            </Card>
-          </Grid> 
-
-          <Grid item xs={12} sm={6} md={3}>
-            <Card elevation={1} style={{ borderRadius: 12 }}>
-              <CardContent>
-                <PeopleAltIcon style={{ fontSize: 32, marginBottom: 10 }} />
-                <Typography variant="subtitle1" fontWeight={600}>Engage with like-minded readers</Typography>
-                <Typography variant="body2" color="textSecondary">
-                  Build relationships and interact with other readers.
-                </Typography>
-              </CardContent>
-            </Card>
-          </Grid>
-
-          <Grid item xs={12} sm={6} md={3}>
-            <Card elevation={1} style={{ borderRadius: 12 }}>
-              <CardContent>
-                <LockIcon style={{ fontSize: 32, marginBottom: 10 }} />
-                <Typography variant="subtitle1" fontWeight={600}>Safe and distraction-free</Typography>
-                <Typography variant="body2" color="textSecondary">
-                  Focus on your writing without interruptions.
-                </Typography>
-              </CardContent>
-            </Card>
-          </Grid>
+        <Grid container spacing={4} justifyContent="center">
+          {features.map((item, index) => (
+            <Grid item xs={12} sm={6} md={3} key={index}>
+              <Zoom in style={{ transitionDelay: `${index * 100}ms` }}>
+                <Card
+                  elevation={3}
+                  sx={{
+                    borderRadius: 4,
+                    textAlign: 'center',
+                    transition: '0.3s ease',
+                    '&:hover': {
+                      transform: 'translateY(-8px)',
+                      boxShadow: 6,
+                    },
+                  }}
+                >
+                  <CardContent>
+                    {item.icon}
+                    <Typography
+                      variant="h6"
+                      fontWeight={600}
+                      mt={2}
+                      gutterBottom
+                    >
+                      {item.title}
+                    </Typography>
+                    <Typography
+                      variant="body2"
+                      color="text.secondary"
+                    >
+                      {item.description}
+                    </Typography>
+                  </CardContent>
+                </Card>
+              </Zoom>
+            </Grid>
+          ))}
         </Grid>
-      </div>
+      </Box>
 
       {/* Footer */}
-      <div style={{ backgroundColor: '#f9f9f9', padding: '20px 0', textAlign: 'center', color: '#888', fontSize: 14 }}>
-        <div>© 2025 Inkspire. All rights reserved.</div>
-      </div>
+      <Box
+        sx={{
+          py: 3,
+          textAlign: 'center',
+          fontSize: 14,
+          backgroundColor: '#212121',
+          color: '#ccc',
+        }}
+      >
+        © {new Date().getFullYear()} Inkspire · All rights reserved.
+      </Box>
     </>
   );
 };
