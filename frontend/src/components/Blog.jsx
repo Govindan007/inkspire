@@ -85,10 +85,11 @@ const Blog = () => {
     if (!confirm) return;
     try {
       const token = localStorage.getItem('token');
-      await axios.delete(
-        `http://localhost:3004/blogs/${blogId}/comments/${commentId}`,
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
+      await axios.delete(`http://localhost:3004/blogs/${blogId}/comments/${commentId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
       setComments(comments.filter((c) => c._id !== commentId));
     } catch (err) {
       console.error('Delete comment error:', err);

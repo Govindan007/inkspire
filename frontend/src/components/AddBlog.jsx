@@ -79,7 +79,7 @@ const AddBlog = () => {
         : await axios.post(baseURL, formData, config);
 
       alert(response.data.message || 'Blog saved successfully!');
-      navigate('/'); // or navigate('/dashboard') or your blog list
+      navigate('/d'); // or navigate('/dashboard') or your blog list
     } catch (error) {
       console.error('Error submitting blog:', error);
       alert(error.response?.data?.error || 'Error saving blog post.');
