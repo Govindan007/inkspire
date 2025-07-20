@@ -205,6 +205,7 @@ exports.editComment = async (req, res) => {
 };
 
 // @desc    Delete a comment
+// ✅ Delete a comment
 exports.deleteComment = async (req, res) => {
   try {
     const blog = await Blog.findById(req.params.id);
@@ -216,16 +217,18 @@ exports.deleteComment = async (req, res) => {
     const comment = blog.comments.id(commentId);
     if (!comment) return res.status(404).json({ error: 'Comment not found' });
 
-    if (comment.user.toString() !== userId) {
+    if (comment.user.toString() !== userId.toString()) {
       return res.status(403).json({ error: 'Unauthorized to delete this comment' });
     }
 
-    comment.remove();
+    // ✅ Proper way to remove embedded subdocument
+    blog.comments.pull(commentId); // 👈 replaces comment.remove()
     await blog.save();
 
-    res.status(200).json({ message: 'Comment deleted' });
+    res.status(200).json({ message: 'Comment deleted successfully' });
   } catch (err) {
     console.error('Error deleting comment:', err);
     res.status(500).json({ error: 'Server error while deleting comment.' });
   }
 };
+
