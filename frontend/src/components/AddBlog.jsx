@@ -17,7 +17,6 @@ import Navbar2 from './Navbar2';
 const AddBlog = () => {
   const navigate = useNavigate();
   const location = useLocation();
-
   const isEdit = location.state !== null;
 
   const [blogData, setBlogData] = useState({
@@ -38,10 +37,10 @@ const AddBlog = () => {
         tags: tags || '',
         content: content || '',
         description: description || '',
-        coverImage: null // optional: preload image if needed
+        coverImage: null
       });
     }
-  }, [location.state]);
+  }, [location.state, isEdit]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -63,19 +62,27 @@ const AddBlog = () => {
       formData.append('coverImage', blogData.coverImage);
     }
 
+    const token = localStorage.getItem('token');
+    const config = {
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'multipart/form-data'
+      }
+    };
+
     const baseURL = 'http://localhost:3004/blogs/';
     const endpoint = isEdit ? `${baseURL}${location.state._id}` : baseURL;
 
     try {
       const response = isEdit
-        ? await axios.put(endpoint, formData)
-        : await axios.post(baseURL, formData);
+        ? await axios.put(endpoint, formData, config)
+        : await axios.post(baseURL, formData, config);
 
       alert(response.data.message || 'Blog saved successfully!');
-      navigate('/'); // or redirect to blog list page
+      navigate('/'); // or navigate('/dashboard') or your blog list
     } catch (error) {
       console.error('Error submitting blog:', error);
-      alert('Error saving blog post.');
+      alert(error.response?.data?.error || 'Error saving blog post.');
     }
   };
 

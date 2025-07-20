@@ -17,7 +17,7 @@ function App() {
       <Route path="/l" element={<Login />} />
       <Route path="/s" element={<Signup />} />
       <Route path="/d" element={<Dashboard />} />
-      <Route path="/b" element={<Blog />} />
+      <Route path="/b/:id" element={<Blog />} />
       <Route path="/a" element={<AddBlog />} />
       <Route path="/profile" element={<Profile />} />
       {/* Optional: Enable if using @username routing */}

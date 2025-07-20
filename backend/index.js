@@ -17,3 +17,14 @@ mongoose.connect(process.env.MONGO_URI)
 
 const PORT = process.env.PORT || 3004;
 app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
+
+app.use((err, req, res, next) => {
+  if (err instanceof multer.MulterError || err.message === 'Only images are allowed') {
+    console.error('❌ Multer error:', err.message);
+    return res.status(400).json({ error: err.message });
+  }
+
+  // Other errors
+  console.error('❌ Unexpected server error:', err);
+  res.status(500).json({ error: 'Server error' });
+});

@@ -13,113 +13,169 @@ import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
-import { useNavigate } from 'react-router-dom';
+import SaveIcon from '@mui/icons-material/Save';
+import CancelIcon from '@mui/icons-material/Cancel';
+import { useNavigate, useParams } from 'react-router-dom';
+import axios from 'axios';
+import { formatDistanceToNow } from 'date-fns';
 
 const Blog = () => {
   const navigate = useNavigate();
-  const blogId = 'blog-123'; // Replace with real ID
+  const { id: blogId } = useParams();
 
-  // Simulated logged-in user
-  const currentUser = { id: 'user123', name: 'Ethan Carter' };
-
+  const [blog, setBlog] = useState(null);
   const [likes, setLikes] = useState(0);
   const [liked, setLiked] = useState(false);
-  const [comments, setComments] = useState([
-    {
-      id: 1,
-      name: 'Ethan Carter',
-      userId: 'user123',
-      content: 'Great blog!',
-      date: '2 days ago',
-    },
-  ]);
+  const [comments, setComments] = useState([]);
   const [newComment, setNewComment] = useState('');
+  const [editingCommentId, setEditingCommentId] = useState(null);
+  const [editedContent, setEditedContent] = useState('');
 
-  // 🧠 Load like state from localStorage
+  const currentUser = JSON.parse(localStorage.getItem('user')) || null;
+
   useEffect(() => {
-    const likeData = JSON.parse(localStorage.getItem(`like-${blogId}`));
-    if (likeData) {
-      setLikes(likeData.count || 0);
-      setLiked(likeData.likedBy?.includes(currentUser.id) || false);
-    } else {
-      setLikes(25); // default
-    }
-  }, []);
-
-  // ❤️ Like Toggle and persist to localStorage
-  const handleLikeToggle = () => {
-    let updatedLikes = liked ? likes - 1 : likes + 1;
-    let likedBy = JSON.parse(localStorage.getItem(`like-${blogId}`))?.likedBy || [];
-
-    if (liked) {
-      likedBy = likedBy.filter((id) => id !== currentUser.id);
-    } else {
-      likedBy.push(currentUser.id);
-    }
-
-    setLiked(!liked);
-    setLikes(updatedLikes);
-    localStorage.setItem(`like-${blogId}`, JSON.stringify({ count: updatedLikes, likedBy }));
-  };
-
-  const handleAddComment = () => {
-    if (!newComment.trim()) return;
-
-    const comment = {
-      id: Date.now(),
-      name: currentUser.name,
-      userId: currentUser.id,
-      content: newComment,
-      date: 'Just now',
+    const fetchBlog = async () => {
+      try {
+        const res = await axios.get(`http://localhost:3004/blogs/${blogId}`);
+        setBlog(res.data.blog);
+        setLikes(res.data.blog.likes?.length || 0);
+        setLiked(res.data.blog.likes?.includes(currentUser?._id));
+        setComments(res.data.blog.comments || []);
+      } catch (err) {
+        console.error('Error fetching blog:', err);
+      }
     };
 
-    setComments([comment, ...comments]);
-    setNewComment('');
+    fetchBlog();
+  }, [blogId, currentUser?._id]);
+
+  const handleLikeToggle = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      await axios.patch(
+        `http://localhost:3004/blogs/${blogId}/like`,
+        {},
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      setLiked(!liked);
+      setLikes((prev) => (liked ? prev - 1 : prev + 1));
+    } catch (err) {
+      console.error('Like error:', err);
+    }
   };
 
-  const handleDeleteComment = (id) => {
-    if (window.confirm('Delete this comment?')) {
-      setComments(comments.filter((c) => c.id !== id));
+  const handleAddComment = async () => {
+    if (!newComment.trim()) return;
+    try {
+      const token = localStorage.getItem('token');
+      const res = await axios.post(
+        `http://localhost:3004/blogs/${blogId}/comments`,
+        { content: newComment },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      setComments([res.data.comment, ...comments]);
+      setNewComment('');
+    } catch (err) {
+      console.error('Error adding comment:', err);
+    }
+  };
+
+  const handleDeleteComment = async (commentId) => {
+    const confirm = window.confirm('Are you sure you want to delete this comment?');
+    if (!confirm) return;
+    try {
+      const token = localStorage.getItem('token');
+      await axios.delete(
+        `http://localhost:3004/blogs/${blogId}/comments/${commentId}`,
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      setComments(comments.filter((c) => c._id !== commentId));
+    } catch (err) {
+      console.error('Delete comment error:', err);
+    }
+  };
+
+  const handleEditComment = (commentId, content) => {
+    setEditingCommentId(commentId);
+    setEditedContent(content);
+  };
+
+  const handleCancelEdit = () => {
+    setEditingCommentId(null);
+    setEditedContent('');
+  };
+
+  const handleSaveComment = async (commentId) => {
+    try {
+      const token = localStorage.getItem('token');
+      const res = await axios.patch(
+        `http://localhost:3004/blogs/${blogId}/comments/${commentId}`,
+        { content: editedContent },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      setComments(
+        comments.map((c) => (c._id === commentId ? { ...c, content: res.data.comment.content } : c))
+      );
+      setEditingCommentId(null);
+      setEditedContent('');
+    } catch (err) {
+      console.error('Edit comment error:', err);
     }
   };
 
   const handleEditBlog = () => {
-    navigate('/a');
+    navigate(`/edit/${blogId}`);
   };
 
-  const handleDeleteBlog = () => {
-    if (window.confirm('Are you sure you want to delete this blog?')) {
+  const handleDeleteBlog = async () => {
+    const confirm = window.confirm('Are you sure you want to delete this blog?');
+    if (!confirm) return;
+    try {
+      const token = localStorage.getItem('token');
+      await axios.delete(`http://localhost:3004/blogs/${blogId}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
       alert('Blog deleted!');
       navigate('/');
+    } catch (err) {
+      console.error('Delete blog error:', err);
     }
   };
 
+  if (!blog) {
+    return <Typography sx={{ pt: 12, textAlign: 'center' }}>Loading blog...</Typography>;
+  }
+
   return (
-    <Box sx={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', backgroundColor: '#fff' }}>
+    <Box sx={{ minHeight: '100vh', backgroundColor: '#fff' }}>
       <Navbar2 />
-      <Box sx={{ maxWidth: '900px', mx: 'auto', px: 2, pt: '100px', flex: 1 }}>
-        {/* Blog Content */}
-        <img
-          src="Blogcover.jpg"
-          alt="cover"
-          style={{ width: '100%', borderRadius: '12px', marginBottom: 30 }}
-        />
+      <Box sx={{ maxWidth: '900px', mx: 'auto', px: 2, pt: '100px' }}>
+        {blog.coverImage && (
+          <img
+            src={`http://localhost:3004/uploads/${blog.coverImage}`}
+            alt={blog.title}
+            style={{ width: '100%', borderRadius: '12px', marginBottom: 30 }}
+          />
+        )}
+
         <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-          <Typography variant="h4" fontWeight={700}>The Future of Work</Typography>
-          <Box>
-            <IconButton onClick={handleEditBlog}><EditIcon /></IconButton>
-            <IconButton onClick={handleDeleteBlog} color="error"><DeleteIcon /></IconButton>
-          </Box>
+          <Typography variant="h4" fontWeight={700}>{blog.title}</Typography>
+          {currentUser?._id === blog.user?._id && (
+            <Box>
+              <IconButton onClick={handleEditBlog}><EditIcon /></IconButton>
+              <IconButton onClick={handleDeleteBlog} color="error"><DeleteIcon /></IconButton>
+            </Box>
+          )}
         </Box>
+
         <Typography sx={{ color: '#555', mb: 3 }}>
-          By <b>Sophia Bennett</b> · January 15, 2024
+          By <b>{blog.user?.username || 'Anonymous'}</b>
         </Typography>
 
-        <Typography paragraph>Remote collaboration is the future...</Typography>
+        <Typography paragraph>{blog.content}</Typography>
 
-        {/* Tags */}
         <Box sx={{ mt: 4, display: 'flex', gap: 2, flexWrap: 'wrap' }}>
-          {['Remote Work', 'Collaboration'].map((tag) => (
+          {blog.tags?.map((tag) => (
             <Button
               key={tag}
               sx={{
@@ -133,7 +189,6 @@ const Blog = () => {
           ))}
         </Box>
 
-        {/* Like and Comment Count */}
         <Box sx={{ mt: 3, display: 'flex', gap: 3, alignItems: 'center' }}>
           <Button
             onClick={handleLikeToggle}
@@ -146,7 +201,6 @@ const Blog = () => {
 
         <Divider sx={{ my: 4 }} />
 
-        {/* Comment Box */}
         <Typography variant="h6" fontWeight={600}>Leave a Comment</Typography>
         <Box sx={{ display: 'flex', mb: 3 }}>
           <TextField
@@ -159,25 +213,46 @@ const Blog = () => {
           <Button variant="contained" onClick={handleAddComment}>Add</Button>
         </Box>
 
-        {/* Comments */}
         {comments.map((c) => (
-          <Box key={c.id} sx={{ display: 'flex', mb: 3 }}>
-            <Avatar sx={{ mr: 2 }}>{c.name.charAt(0)}</Avatar>
+          <Box key={c._id} sx={{ display: 'flex', mb: 3 }}>
+            <Avatar sx={{ mr: 2 }}>{c.user?.username?.charAt(0) || 'U'}</Avatar>
             <Box sx={{ flex: 1 }}>
-              <Typography fontWeight={500}>{c.name}</Typography>
-              <Typography fontSize={12} color="gray">{c.date}</Typography>
-              <Typography mt={1}>{c.content}</Typography>
+              <Typography fontWeight={500}>{c.user?.username || 'User'}</Typography>
+              <Typography fontSize={12} color="gray">
+                {formatDistanceToNow(new Date(c.createdAt), { addSuffix: true })}
+              </Typography>
+
+              {editingCommentId === c._id ? (
+                <>
+                  <TextField
+                    value={editedContent}
+                    onChange={(e) => setEditedContent(e.target.value)}
+                    fullWidth
+                    size="small"
+                    sx={{ mt: 1 }}
+                  />
+                  <Box sx={{ mt: 1 }}>
+                    <IconButton onClick={() => handleSaveComment(c._id)}><SaveIcon /></IconButton>
+                    <IconButton onClick={handleCancelEdit}><CancelIcon /></IconButton>
+                  </Box>
+                </>
+              ) : (
+                <Typography mt={1}>{c.content}</Typography>
+              )}
             </Box>
-            {c.userId === currentUser.id && (
-              <IconButton onClick={() => handleDeleteComment(c.id)} color="error">
-                <DeleteIcon fontSize="small" />
-              </IconButton>
+
+            {c.user?._id === currentUser?._id && (
+              <Box>
+                <IconButton onClick={() => handleEditComment(c._id, c.content)}><EditIcon fontSize="small" /></IconButton>
+                <IconButton onClick={() => handleDeleteComment(c._id)} color="error">
+                  <DeleteIcon fontSize="small" />
+                </IconButton>
+              </Box>
             )}
           </Box>
         ))}
       </Box>
 
-      {/* ✅ Fixed Footer */}
       <Box
         component="footer"
         sx={{
