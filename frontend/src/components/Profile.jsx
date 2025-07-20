@@ -49,7 +49,7 @@ const Profile = () => {
   }, [user]);
 
   const handleEdit = (post) => {
-    navigate(`/edit/${post._id}`);
+    navigate(`/edit/${post._id}`, { state: post });
   };
 
   const handleDelete = async (id) => {
@@ -100,10 +100,19 @@ const Profile = () => {
                 <Typography fontWeight="bold">{post.title}</Typography>
                 <Typography variant="body2" color="text.secondary">{post.description}</Typography>
                 <Stack direction="row" spacing={1} mt={2}>
-                  <Button variant="outlined" startIcon={<EditIcon />} onClick={() => handleEdit(post)}>
+                  <Button
+                    variant="outlined"
+                    startIcon={<EditIcon />}
+                    onClick={() => handleEdit(post)}
+                  >
                     Edit
                   </Button>
-                  <Button variant="outlined" color="error" startIcon={<DeleteIcon />} onClick={() => handleDelete(post._id)}>
+                  <Button
+                    variant="outlined"
+                    color="error"
+                    startIcon={<DeleteIcon />}
+                    onClick={() => handleDelete(post._id)}
+                  >
                     Delete
                   </Button>
                 </Stack>

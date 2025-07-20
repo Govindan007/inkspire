@@ -19,9 +19,8 @@ function App() {
       <Route path="/d" element={<Dashboard />} />
       <Route path="/b/:id" element={<Blog />} />
       <Route path="/a" element={<AddBlog />} />
+      <Route path="/edit/:id" element={<AddBlog />} /> {/* ✅ Add this line */}
       <Route path="/profile" element={<Profile />} />
-      {/* Optional: Enable if using @username routing */}
-      {/* <Route path="/@:username" element={<Profile />} /> */}
       <Route path="/admin" element={<AdminDashboard />} />
     </Routes>
   );

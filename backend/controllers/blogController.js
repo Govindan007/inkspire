@@ -6,10 +6,20 @@ exports.createBlog = async (req, res) => {
     const { title, category, tags, content, description } = req.body;
     const userId = req.user._id || req.user.id;
 
+    console.log('📥 Incoming request body:', req.body);
+    console.log('🖼️ Uploaded file:', req.file); // log image details
+
+    // Step 1: Validate required fields
     if (!title || !category || !content || !description) {
       return res.status(400).json({ error: 'Please fill in all required fields.' });
     }
 
+    // Step 2: Check if image is missing
+    if (!req.file) {
+      return res.status(400).json({ error: 'Cover image is required.' });
+    }
+
+    // Step 3: Create blog
     const blog = new Blog({
       title,
       category,
@@ -17,16 +27,18 @@ exports.createBlog = async (req, res) => {
       content,
       description,
       user: userId,
-      coverImage: req.file ? req.file.filename : ''
+      coverImage: req.file.filename
     });
 
     await blog.save();
+    console.log('✅ Blog saved:', blog);
     res.status(201).json({ message: 'Blog created successfully!', blog });
   } catch (error) {
-    console.error('Error creating blog:', error);
+    console.error('❌ Error creating blog:', error);
     res.status(500).json({ error: 'Server error. Failed to create blog.' });
   }
 };
+
 
 // @desc    Get all blogs (optionally filter by user)
 exports.getAllBlogs = async (req, res) => {
