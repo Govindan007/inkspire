@@ -1,49 +1,31 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Navbar2 from './Navbar2';
 import { Link, useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 const Dashboard = () => {
   const navigate = useNavigate();
+  const [blogs, setBlogs] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [activeTag, setActiveTag] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
 
-  const allBlogs = [
-    {
-      title: 'The Future of AI in Everyday Life',
-      author: 'Alex Turner',
-      image: 'blog1.jpg',
-      tag: 'Technology',
-    },
-    {
-      title: 'Exploring the Hidden Gems of Southeast Asia',
-      author: 'Sarah Chen',
-      image: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e',
-      tag: 'Travel',
-    },
-    {
-      title: 'Mastering the Art of Italian Cooking',
-      author: 'Marco Rossi',
-      image: 'Blog 3.jpg',
-      tag: 'Food',
-    },
-    {
-      title: 'The Ultimate Guide to Sustainable Living',
-      author: 'Emily Green',
-      image: 'https://images.unsplash.com/photo-1501004318641-b39e6451bec6',
-      tag: 'Lifestyle',
-    },
-    {
-      title: 'Daily Yoga Habits for Better Health',
-      author: 'Aarav Mehta',
-      image: 'https://images.unsplash.com/photo-1556817411-31ae72fa3ea0',
-      tag: 'Health',
-    },
-  ];
+  useEffect(() => {
+    const fetchBlogs = async () => {
+      try {
+        const res = await axios.get('http://localhost:3004/blogs');
+        setBlogs(res.data.blogs || []);
+      } catch (err) {
+        console.error('Error fetching blogs:', err.message);
+      }
+    };
 
-  const filteredBlogs = allBlogs.filter((blog) =>
+    fetchBlogs();
+  }, []);
+
+  const filteredBlogs = blogs.filter((blog) =>
     blog.title.toLowerCase().includes(searchTerm.toLowerCase()) &&
-    (activeTag === '' || blog.tag === activeTag)
+    (activeTag === '' || blog.category === activeTag)
   );
 
   const blogsPerPage = 3;
@@ -85,7 +67,7 @@ const Dashboard = () => {
 
         {/* 🏷️ Tags */}
         <div style={{ textAlign: 'center', marginBottom: '30px' }}>
-          {['All', 'Technology', 'Travel', 'Food', 'Lifestyle', 'Health'].map((label) => (
+          {['All', 'Technology', 'Travel', 'Food', 'Lifestyle', 'Health', 'Education'].map((label) => (
             <button
               key={label}
               onClick={() => {
@@ -102,8 +84,6 @@ const Dashboard = () => {
                 cursor: 'pointer',
                 transition: 'all 0.2s ease-in-out',
               }}
-              onMouseEnter={(e) => e.target.style.transform = 'scale(1.05)'}
-              onMouseLeave={(e) => e.target.style.transform = 'scale(1)'}
             >
               {label}
             </button>
@@ -114,7 +94,7 @@ const Dashboard = () => {
         <div style={{ width: '85%', maxWidth: '1000px', margin: 'auto' }}>
           {displayedBlogs.map((blog, idx) => (
             <div
-              key={idx}
+              key={blog._id || idx}
               style={{
                 display: 'flex',
                 justifyContent: 'space-between',
@@ -127,13 +107,13 @@ const Dashboard = () => {
                 transition: 'transform 0.3s ease',
                 color: 'black',
               }}
-              onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.015)'}
-              onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
             >
               <div style={{ flex: 1 }}>
                 <h3 style={{ margin: 0 }}>{blog.title}</h3>
-                <p style={{ margin: '5px 0 15px', color: '#555' }}>By {blog.author}</p>
-                <Link to="/b" style={{ textDecoration: 'none' }}>
+                <p style={{ margin: '5px 0 15px', color: '#555' }}>
+                  By {blog.user?.username || 'Unknown Author'}
+                </p>
+                <Link to={`/b/${blog._id}`} style={{ textDecoration: 'none' }}>
                   <button
                     style={{
                       padding: '8px 16px',
@@ -142,32 +122,27 @@ const Dashboard = () => {
                       backgroundColor: '#3f51b5',
                       color: '#fff',
                       cursor: 'pointer',
-                      transition: '0.3s ease',
                     }}
-                    onMouseEnter={(e) => e.target.style.backgroundColor = '#2c3f91'}
-                    onMouseLeave={(e) => e.target.style.backgroundColor = '#3f51b5'}
                   >
                     Read More
                   </button>
                 </Link>
               </div>
-              <img
-                src={blog.image}
-                alt={blog.title}
-                style={{
-                  width: '200px',
-                  height: '120px',
-                  objectFit: 'cover',
-                  borderRadius: '10px',
-                  marginLeft: '20px',
-                  transition: 'transform 0.3s ease',
-                }}
-                onMouseEnter={(e) => e.target.style.transform = 'scale(1.05)'}
-                onMouseLeave={(e) => e.target.style.transform = 'scale(1)'}
-              />
+              {blog.coverImage && (
+                <img
+                  src={`http://localhost:3004/uploads/${blog.coverImage}`}
+                  alt={blog.title}
+                  style={{
+                    width: '200px',
+                    height: '120px',
+                    objectFit: 'cover',
+                    borderRadius: '10px',
+                    marginLeft: '20px',
+                  }}
+                />
+              )}
             </div>
           ))}
-
           {filteredBlogs.length === 0 && (
             <p style={{ textAlign: 'center', color: '#888' }}>No blogs found.</p>
           )}
@@ -181,7 +156,6 @@ const Dashboard = () => {
           >
             &#x276E;
           </span>
-
           {[...Array(totalPages).keys()].map((i) => (
             <span
               key={i}
@@ -195,7 +169,6 @@ const Dashboard = () => {
               {i + 1}
             </span>
           ))}
-
           <span
             style={{ margin: '0 10px', cursor: currentPage < totalPages ? 'pointer' : 'not-allowed' }}
             onClick={() => currentPage < totalPages && setCurrentPage(currentPage + 1)}
@@ -204,7 +177,7 @@ const Dashboard = () => {
           </span>
         </div>
 
-        {/* ➕ Floating Add Blog Button with Text */}
+        {/* ➕ Floating Add Blog Button */}
         <button
           onClick={() => navigate('/a')}
           style={{
@@ -216,33 +189,17 @@ const Dashboard = () => {
             backgroundColor: '#000000ff',
             color: '#fff',
             fontSize: '16px',
-            border: 'none',
             fontWeight: 'bold',
+            border: 'none',
             boxShadow: '0 4px 12px rgba(0,0,0,0.2)',
             cursor: 'pointer',
-            transition: 'transform 0.2s ease, background-color 0.2s ease',
-          }}
-          onMouseEnter={(e) => {
-            e.target.style.transform = 'scale(1.05)';
-            e.target.style.backgroundColor = '#2c3f91';
-          }}
-          onMouseLeave={(e) => {
-            e.target.style.transform = 'scale(1)';
-            e.target.style.backgroundColor = '#000000ff';
           }}
         >
           Add Blog
         </button>
 
         {/* Footer */}
-        <div
-          style={{
-            textAlign: 'center',
-            paddingBottom: '30px',
-            fontSize: '13px',
-            color: '#999'
-          }}
-        >
+        <div style={{ textAlign: 'center', paddingBottom: '30px', fontSize: '13px', color: '#999' }}>
           ©2025 Inkspire. All rights reserved.
         </div>
       </div>

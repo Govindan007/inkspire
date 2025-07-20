@@ -8,6 +8,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import Avatar from '@mui/material/Avatar';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
+import logo from '../assets/Icon.svg'; // Adjust the path as necessary
 
 const Navbar2 = () => {
   const navigate = useNavigate();
@@ -44,7 +45,7 @@ const Navbar2 = () => {
           {/* Logo & Title */}
           <Link to="/d" style={{ display: 'flex', alignItems: 'center', textDecoration: 'none' }}>
             <IconButton edge="start">
-              <img src="Icon.svg" alt="Blog App Logo" style={{ height: 32 }} />
+              <img src={logo} alt="Inkspire" style={{ height: 32 }} />
             </IconButton>
             <Typography
               variant="h6"
@@ -62,7 +63,7 @@ const Navbar2 = () => {
           <IconButton onClick={handleMenuClick}>
             <Avatar
               alt="Profile"
-              src="Mathew.jpg"
+              src="ProfileIcon.png"
               sx={{ width: 36, height: 36 }}
             />
           </IconButton>

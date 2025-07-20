@@ -6,6 +6,7 @@ import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import IconButton from '@mui/material/IconButton';
 import { Link } from 'react-router-dom';
+import logo from '../assets/Icon.svg'; 
 
 const Navbar = () => {
   return (
@@ -29,7 +30,7 @@ const Navbar = () => {
           {/* Logo and Title */}
           <Link to="/" style={{ display: 'flex', alignItems: 'center', textDecoration: 'none' }}>
             <IconButton edge="start">
-              <img src="Icon.svg" alt="Blog App Logo" style={{ height: 32 }} />
+             <img src={logo} alt="Inkspire" style={{ height: 32 }} />
             </IconButton>
             <Typography
               variant="h6"

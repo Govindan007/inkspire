@@ -19,15 +19,15 @@ const Login = () => {
       const res = await axios.post("http://localhost:3004/auth/login", inp);
 
       if (res.data.token) {
-        alert("Login successful");
         localStorage.setItem("token", res.data.token);
         localStorage.setItem("user", JSON.stringify(res.data.user));
         navigate("/d");
+
       } else {
         alert(res.data.message || "Login failed.");
       }
     } catch (err) {
-      alert("Login failed: " + (err.response?.data?.message || err.message));
+      alert("Login failed: " + (err.response?.data?.error || err.message));
     }
   };
 
