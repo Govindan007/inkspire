@@ -1,19 +1,17 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const { authMiddleware, adminMiddleware } = require('../middleware/auth');
+const { authMiddleware, adminMiddleware } = require("../middleware/auth");
 const {
   adminLogin,
-  getDashboard,
+  getAllUsers,
   getAllBlogs
-} = require('../controllers/adminController'); // ✅ DESTRUCTURE ALL THREE
+} = require("../controllers/adminController");
 
-// Admin login route
-router.post('/login', adminLogin);
+// Admin Login (public)
+router.post("/login", adminLogin);
 
-// Admin dashboard test route
-router.get('/dashboard', authMiddleware, adminMiddleware, getDashboard);
-
-// ✅ Fix: Route.get() crash caused by missing getAllBlogs
-router.get('/blogs', authMiddleware, adminMiddleware, getAllBlogs);
+// Admin protected routes
+router.get("/users", authMiddleware, adminMiddleware, getAllUsers);
+router.get("/blogs", authMiddleware, adminMiddleware, getAllBlogs);
 
 module.exports = router;

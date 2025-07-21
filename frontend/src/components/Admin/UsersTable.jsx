@@ -3,50 +3,37 @@ import axios from 'axios';
 
 const UsersTable = () => {
   const [users, setUsers] = useState([]);
-  const token = localStorage.getItem('token');
 
   useEffect(() => {
     const fetchUsers = async () => {
+      const token = localStorage.getItem('token');
+      if (!token) return;
+
       try {
         const res = await axios.get('http://localhost:3004/admin/users', {
-          headers: { Authorization: `Bearer ${token}` },
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         });
         setUsers(res.data.users);
       } catch (err) {
-        console.error('Failed to fetch users:', err);
+        console.error('Failed to fetch users:', err.response?.data || err.message);
       }
     };
 
     fetchUsers();
-  }, [token]);
-
-  const handleDelete = async (userId) => {
-    if (!window.confirm('Delete this user?')) return;
-    try {
-      await axios.delete(`http://localhost:3004/admin/users/${userId}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      setUsers(users.filter(user => user._id !== userId));
-    } catch (err) {
-      console.error('Delete user error:', err);
-    }
-  };
+  }, []);
 
   return (
     <table>
       <thead>
-        <tr><th>Username</th><th>Email</th><th>Action</th></tr>
+        <tr><th>Username</th><th>Email</th></tr>
       </thead>
       <tbody>
         {users.map(user => (
           <tr key={user._id}>
             <td>{user.username}</td>
             <td>{user.email}</td>
-            <td>
-              <button onClick={() => handleDelete(user._id)} style={{ color: 'red' }}>
-                Delete
-              </button>
-            </td>
           </tr>
         ))}
       </tbody>

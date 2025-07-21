@@ -10,6 +10,7 @@ const AdminLogin = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setError('');
 
     try {
       const res = await axios.post('http://localhost:3004/admin/login', {
@@ -19,14 +20,18 @@ const AdminLogin = () => {
 
       const { token, user } = res.data;
 
+      if (!user || user.role !== 'admin') {
+        setError('Not authorized as admin');
+        return;
+      }
+
       localStorage.setItem('token', token);
-      localStorage.setItem('isAdmin', 'true');
       localStorage.setItem('user', JSON.stringify(user));
 
       navigate('/admin/dashboard');
     } catch (err) {
       console.error('Admin login failed:', err.response?.data || err.message);
-      setError('Invalid email or password');
+      setError(err.response?.data?.message || 'Login failed');
     }
   };
 
@@ -55,9 +60,7 @@ const AdminLogin = () => {
 
         {error && <p style={styles.error}>{error}</p>}
 
-        <button type="submit" style={styles.button}>
-          Login
-        </button>
+        <button type="submit" style={styles.button}>Login</button>
 
         <p style={styles.footerNote}>
           Only authorized admins can access this panel.
