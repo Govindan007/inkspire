@@ -1,10 +1,10 @@
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
 
+// ✅ Auth middleware for all users
 const authMiddleware = (req, res, next) => {
   const authHeader = req.headers['authorization'];
 
-  // Check if Authorization header is present and properly formatted
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
     return res.status(401).json({ message: 'Unauthorized: No token provided' });
   }
@@ -14,17 +14,25 @@ const authMiddleware = (req, res, next) => {
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-    // Attach user to request object
     req.user = {
-      _id: decoded._id || decoded.id, // support both naming styles
-      email: decoded.email
+      _id: decoded._id || decoded.id,
+      email: decoded.email,
+      role: decoded.role || 'user'
     };
 
-    next(); // Continue to next middleware or route handler
+    next();
   } catch (err) {
     console.error('❌ JWT Verification failed:', err.message);
     return res.status(401).json({ message: 'Unauthorized: Invalid token' });
   }
 };
 
-module.exports = { authMiddleware };
+// ✅ Admin-only middleware
+const adminMiddleware = (req, res, next) => {
+  if (req.user?.role !== 'admin') {
+    return res.status(403).json({ message: 'Access denied: Admins only' });
+  }
+  next();
+};
+
+module.exports = { authMiddleware, adminMiddleware };

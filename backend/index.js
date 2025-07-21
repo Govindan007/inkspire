@@ -16,6 +16,7 @@ app.use("/admin", require("./routes/adminRoutes"));
 app.use("/auth", require("./routes/authRoutes"));
 app.use("/blogs", require("./routes/blogRoutes"));
 
+
 // ✅ Error handling middleware
 app.use((err, req, res, next) => {
   if (err.message === 'Only images are allowed') {

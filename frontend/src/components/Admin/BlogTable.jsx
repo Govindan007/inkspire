@@ -1,46 +1,57 @@
-import React from 'react';
-
-const dummyBlogs = [
-  { title: "Why MERN Stack is Popular", author: "Ethan Harper" },
-  { title: "Understanding React Hooks", author: "Olivia Bennett" },
-  { title: "Secure Node.js APIs", author: "Noah Carter" }
-];
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
 
 const BlogTable = () => {
-  return (
-    <div style={{ border: '1px solid #cbd5e1', borderRadius: '10px', overflowX: 'auto' }}>
-      <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-        <thead>
-          <tr style={{ backgroundColor: '#f1f5f9' }}>
-            <th style={thStyle}>Title</th>
-            <th style={thStyle}>Author</th>
-            <th style={thStyle}>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {dummyBlogs.map((blog, index) => (
-            <tr key={index} style={{ borderBottom: '1px solid #e2e8f0' }}>
-              <td style={tdStyle}>{blog.title}</td>
-              <td style={tdStyle}>{blog.author}</td>
-              <td style={tdStyle}>
-                <button style={deleteButton}>Delete</button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
-  );
-};
+  const [blogs, setBlogs] = useState([]);
+  const token = localStorage.getItem('token');
 
-const thStyle = { padding: '15px', textAlign: 'left', fontWeight: '600', color: '#334155' };
-const tdStyle = { padding: '15px', color: '#334155' };
-const deleteButton = {
-  border: 'none',
-  background: 'none',
-  color: '#1d4ed8',
-  fontWeight: '600',
-  cursor: 'pointer'
+  useEffect(() => {
+    const fetchBlogs = async () => {
+      try {
+        const res = await axios.get('http://localhost:3004/admin/blogs', {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        setBlogs(res.data.blogs);
+      } catch (err) {
+        console.error('Failed to fetch blogs:', err);
+      }
+    };
+
+    fetchBlogs();
+  }, [token]);
+
+  const handleDelete = async (blogId) => {
+    if (!window.confirm('Delete this blog?')) return;
+    try {
+      await axios.delete(`http://localhost:3004/blogs/${blogId}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setBlogs(blogs.filter(blog => blog._id !== blogId));
+    } catch (err) {
+      console.error('Delete blog error:', err);
+    }
+  };
+
+  return (
+    <table>
+      <thead>
+        <tr><th>Title</th><th>Author</th><th>Action</th></tr>
+      </thead>
+      <tbody>
+        {blogs.map(blog => (
+          <tr key={blog._id}>
+            <td>{blog.title}</td>
+            <td>{blog.user?.username || 'Unknown'}</td>
+            <td>
+              <button onClick={() => handleDelete(blog._id)} style={{ color: 'red' }}>
+                Delete
+              </button>
+            </td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  );
 };
 
 export default BlogTable;

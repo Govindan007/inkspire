@@ -1,8 +1,12 @@
-const express = require("express");
+const express = require('express');
 const router = express.Router();
-const authController = require("../controllers/authController");
+const { authMiddleware, adminMiddleware } = require('../middleware/auth');
+const adminController = require('../controllers/adminController');
 
-router.post("/signup", authController.signup);
-router.post("/login", authController.login);
+// Admin login route
+router.post('/login', adminController.adminLogin);
+
+// Admin dashboard (protected)
+router.get('/dashboard', authMiddleware, adminMiddleware, adminController.getDashboard);
 
 module.exports = router;
