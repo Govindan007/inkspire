@@ -27,7 +27,6 @@ exports.authMiddleware = async (req, res, next) => {
 };
 
 exports.adminMiddleware = (req, res, next) => {
-  console.log("🛡 Admin check bypassed for now");
   next(); // Don't check role
 };
 
