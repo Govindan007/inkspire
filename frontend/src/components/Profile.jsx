@@ -64,6 +64,8 @@ const Profile = () => {
 
       setPosts(posts.filter((p) => p._id !== id));
     } catch (err) {
+      const errorMsg = err.response?.data?.error || "Delete failed. Please try again.";
+      alert(errorMsg);
       console.error("Delete failed:", err);
     }
   };
