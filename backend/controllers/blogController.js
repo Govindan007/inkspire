@@ -82,7 +82,10 @@ exports.updateBlog = async (req, res) => {
     const blog = await Blog.findById(req.params.id);
     if (!blog) return res.status(404).json({ error: 'Blog not found' });
 
-    if (blog.user.toString() !== (req.user._id || req.user.id)) {
+    // Always compare as strings to avoid ObjectId vs string mismatch
+    const blogUserId = blog.user && blog.user.toString();
+    const reqUserId = (req.user._id || req.user.id) && (req.user._id || req.user.id).toString();
+    if (blogUserId !== reqUserId) {
       return res.status(403).json({ error: 'Unauthorized to edit this blog' });
     }
 
@@ -194,7 +197,7 @@ exports.editComment = async (req, res) => {
     const comment = blog.comments.id(commentId);
     if (!comment) return res.status(404).json({ error: 'Comment not found' });
 
-    if (comment.user.toString() !== userId) {
+    if (comment.user.toString() !== userId.toString()) {
       return res.status(403).json({ error: 'Unauthorized to edit this comment' });
     }
 
