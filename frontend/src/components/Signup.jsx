@@ -6,7 +6,14 @@ import Navbar from './Navbar';
 
 const Signup = () => {
   const navigate = useNavigate();
-  const [inp, setInp] = useState({ email: "", password: "" });
+
+  // ✅ Include username in state
+  const [inp, setInp] = useState({
+    username: "",
+    email: "",
+    password: ""
+  });
+
   const [pass, setPass] = useState("");
 
   const inputHandler = (e) => {
@@ -20,37 +27,18 @@ const Signup = () => {
     }
 
     try {
-      const check = await axios.post("http://localhost:3004/l", {
-        email: inp.email,
-        password: inp.password
-      });
-
-      if (check.data.success) {
-        alert("User already exists. Please log in.");
-        setInp({ email: "", password: "" });
-        setPass("");
-        return;
-      }
+      const res = await axios.post("http://localhost:3004/api/auth/register", inp); // ✅ Use actual route
+      alert(res.data.message || "Signup successful!");
+      navigate("/d"); // ✅ Redirect after signup
     } catch (err) {
-      if (err.response?.data?.message !== "User not found") {
-        alert("Something went wrong while checking user.");
-        return;
-      }
+      const errorMsg = err.response?.data?.error || "Signup failed. Please try again.";
+      alert(errorMsg);
     }
-
-    axios.post('http://localhost:3004/s', inp)
-      .then((res) => {
-        alert(res.data);
-        navigate("/d");
-      })
-      .catch((err) => {
-        console.log(err);
-      });
   };
 
   return (
     <>
-    <Navbar/>
+      <Navbar />
       <div
         style={{
           minHeight: '100vh',
@@ -66,14 +54,59 @@ const Signup = () => {
             Join Inkspire.
           </Typography>
 
-          <TextField fullWidth label="Email" name="email" value={inp.email} onChange={inputHandler} margin="normal" variant="outlined" type="email" />
-          <TextField fullWidth label="Password" name="password" value={inp.password} onChange={inputHandler} margin="normal" variant="outlined" type="password" />
-          <TextField fullWidth label="Confirm Password" value={pass} onChange={(e) => setPass(e.target.value)} margin="normal" variant="outlined" type="password" />
+          <TextField
+            fullWidth
+            label="Username"
+            name="username"
+            value={inp.username}
+            onChange={inputHandler}
+            margin="normal"
+            variant="outlined"
+          />
 
-          <Button variant="contained" fullWidth sx={{ mt: 2, py: 1, fontWeight: 600 }} onClick={submitHandler}>Sign Up</Button>
+          <TextField
+            fullWidth
+            label="Email"
+            name="email"
+            type="email"
+            value={inp.email}
+            onChange={inputHandler}
+            margin="normal"
+            variant="outlined"
+          />
+
+          <TextField
+            fullWidth
+            label="Password"
+            name="password"
+            type="password"
+            value={inp.password}
+            onChange={inputHandler}
+            margin="normal"
+            variant="outlined"
+          />
+
+          <TextField
+            fullWidth
+            label="Confirm Password"
+            type="password"
+            value={pass}
+            onChange={(e) => setPass(e.target.value)}
+            margin="normal"
+            variant="outlined"
+          />
+
+          <Button
+            variant="contained"
+            fullWidth
+            sx={{ mt: 2, py: 1, fontWeight: 600 }}
+            onClick={submitHandler}
+          >
+            Sign Up
+          </Button>
 
           <Typography align="center" sx={{ mt: 2 }}>
-            Already have an account? <Link to="/l">Log in</Link>
+            Already have an account? <Link to="/login">Log in</Link>
           </Typography>
         </div>
       </div>

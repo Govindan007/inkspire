@@ -4,6 +4,7 @@ const cors = require("cors");
 const path = require("path");
 require("dotenv").config();
 const adminRoutes = require("./routes/adminRoutes");
+const authRoutes = require("./routes/authRoutes");
 
 
 const app = express();
@@ -21,7 +22,7 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 app.use("/admin", require("./routes/adminRoutes"));
 app.use("/auth", require("./routes/authRoutes"));
 app.use("/blogs", require("./routes/blogRoutes"));
-
+app.use('/api/auth', authRoutes);
 
 // ✅ Error handling middleware
 app.use((err, req, res, next) => {
