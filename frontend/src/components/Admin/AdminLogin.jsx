@@ -28,6 +28,7 @@ const AdminLogin = () => {
       localStorage.setItem('token', token);
       console.log("Saved token:", token);
       localStorage.setItem('user', JSON.stringify(user));
+      localStorage.setItem('isAdmin', 'true');
 
       navigate('/admin/dashboard');
     } catch (err) {
