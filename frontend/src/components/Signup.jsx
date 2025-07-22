@@ -28,6 +28,11 @@ const Signup = () => {
 
     try {
       const res = await axios.post("http://localhost:3004/api/auth/register", inp); // ✅ Use actual route
+      // Save user and token to localStorage for correct profile
+      if (res.data.token && res.data.user) {
+        localStorage.setItem("token", res.data.token);
+        localStorage.setItem("user", JSON.stringify(res.data.user));
+      }
       alert(res.data.message || "Signup successful!");
       navigate("/d"); // ✅ Redirect after signup
     } catch (err) {
