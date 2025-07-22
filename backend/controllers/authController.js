@@ -23,17 +23,23 @@ exports.signup = async (req, res) => {
   }
 };
 
+// authController.js
 exports.login = async (req, res) => {
   try {
     const { email, password } = req.body;
+
     const user = await User.findOne({ email });
     if (!user) return res.status(400).json({ error: "Invalid credentials" });
 
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) return res.status(400).json({ error: "Invalid credentials" });
 
-    const token = jwt.sign({ id: user._id }, JWT_SECRET, { expiresIn: "1d" });
-    // Exclude password from user object before sending
+    const token = jwt.sign(
+      { id: user._id, role: user.role }, // ✅ include role
+      process.env.JWT_SECRET,
+      { expiresIn: "1d" }
+    );
+
     const { password: pwd, ...userData } = user._doc;
     res.json({ message: "Login successful", token, user: userData });
   } catch (err) {

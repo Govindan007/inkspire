@@ -1,10 +1,21 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import AdminSidebar from './AdminSidebar';
 import UsersTable from './UsersTable';
 import BlogTable from './BlogTable';
 
 const AdminDashboard = () => {
   const [tab, setTab] = useState('users');
+  const navigate = useNavigate();
+
+  // ✅ Protect route: Only allow admin
+  useEffect(() => {
+    const user = JSON.parse(localStorage.getItem('user'));
+    if (!user || user.role !== 'admin') {
+      alert('Access denied. Admins only.');
+      navigate('/');
+    }
+  }, [navigate]);
 
   return (
     <div style={{ display: 'flex', minHeight: '100vh', backgroundColor: '#f8fafc' }}>

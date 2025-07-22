@@ -1,30 +1,37 @@
-const jwt = require('jsonwebtoken');
-require('dotenv').config();
+// backend/middleware/auth.js
+const jwt = require("jsonwebtoken");
+const User = require("../models/User");
 
-const authMiddleware = (req, res, next) => {
-  const authHeader = req.headers['authorization'];
+exports.authMiddleware = async (req, res, next) => {
+  const authHeader = req.headers.authorization;
 
-  // Check if Authorization header is present and properly formatted
-  if (!authHeader || !authHeader.startsWith('Bearer ')) {
-    return res.status(401).json({ message: 'Unauthorized: No token provided' });
+  if (!authHeader?.startsWith("Bearer ")) {
+    return res.status(401).json({ message: "Unauthorized: No token provided" });
   }
 
-  const token = authHeader.split(' ')[1];
+  const token = authHeader.split(" ")[1];
 
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-    // Attach user to request object
-    req.user = {
-      _id: decoded._id || decoded.id, // support both naming styles
-      email: decoded.email
-    };
+    const user = await User.findById(decoded.id); // fetch full user
+    if (!user) {
+      return res.status(401).json({ message: "User not found" });
+    }
 
-    next(); // Continue to next middleware or route handler
+    req.user = user; // attach user object to req
+    next();
   } catch (err) {
-    console.error('❌ JWT Verification failed:', err.message);
-    return res.status(401).json({ message: 'Unauthorized: Invalid token' });
+    return res.status(401).json({ message: "Unauthorized: Invalid token" });
   }
 };
 
-module.exports = { authMiddleware };
+exports.adminMiddleware = (req, res, next) => {
+  console.log("🛡 Admin check:", req.user?.role);
+
+  if (req.user?.role !== "admin") {
+    return res.status(403).json({ message: "Not authorized as admin" });
+  }
+
+  next();
+};
