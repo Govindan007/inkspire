@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { Button, TextField, Typography } from '@mui/material';
 import { useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
+
+const BACKEND = import.meta.env.VITE_BACKEND_LINK;
 import Navbar from './Navbar';
 
 const Signup = () => {
@@ -27,7 +29,7 @@ const Signup = () => {
     }
 
     try {
-      const res = await axios.post("http://localhost:3004/api/auth/register", inp); // ✅ Use actual route
+      const res = await axios.post(`${BACKEND}/api/auth/register`, inp); // Use env var
       // Save user and token to localStorage for correct profile
       if (res.data.token && res.data.user) {
         localStorage.setItem("token", res.data.token);

@@ -17,6 +17,8 @@ import SaveIcon from '@mui/icons-material/Save';
 import CancelIcon from '@mui/icons-material/Cancel';
 import { useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
+
+const BACKEND = import.meta.env.VITE_BACKEND_LINK;
 import { formatDistanceToNow } from 'date-fns';
 
 const Blog = () => {
@@ -36,7 +38,7 @@ const Blog = () => {
   useEffect(() => {
     const fetchBlog = async () => {
       try {
-        const res = await axios.get(`http://localhost:3004/blogs/${blogId}`);
+        const res = await axios.get(`${BACKEND}/blogs/${blogId}`);
         setBlog(res.data.blog);
         setLikes(res.data.blog.likes?.length || 0);
         setLiked(res.data.blog.likes?.includes(currentUser?._id));
@@ -53,7 +55,7 @@ const Blog = () => {
     try {
       const token = localStorage.getItem('token');
       await axios.patch(
-        `http://localhost:3004/blogs/${blogId}/like`,
+        `${BACKEND}/blogs/${blogId}/like`,
         {},
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -69,7 +71,7 @@ const Blog = () => {
     try {
       const token = localStorage.getItem('token');
       const res = await axios.post(
-        `http://localhost:3004/blogs/${blogId}/comments`,
+        `${BACKEND}/blogs/${blogId}/comments`,
         { content: newComment },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -85,7 +87,7 @@ const Blog = () => {
     if (!confirm) return;
     try {
       const token = localStorage.getItem('token');
-      await axios.delete(`http://localhost:3004/blogs/${blogId}/comments/${commentId}`, {
+      await axios.delete(`${BACKEND}/blogs/${blogId}/comments/${commentId}`, {
         headers: {
           Authorization: `Bearer ${token}`
         }
@@ -110,7 +112,7 @@ const Blog = () => {
     try {
       const token = localStorage.getItem('token');
       const res = await axios.patch(
-        `http://localhost:3004/blogs/${blogId}/comments/${commentId}`,
+        `${BACKEND}/blogs/${blogId}/comments/${commentId}`,
         { content: editedContent },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -133,7 +135,7 @@ const Blog = () => {
     if (!confirm) return;
     try {
       const token = localStorage.getItem('token');
-      await axios.delete(`http://localhost:3004/blogs/${blogId}`, {
+      await axios.delete(`${BACKEND}/blogs/${blogId}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       alert('Blog deleted!');
@@ -153,7 +155,7 @@ const Blog = () => {
       <Box sx={{ maxWidth: '900px', mx: 'auto', px: 2, pt: '100px' }}>
         {blog.coverImage && (
           <img
-            src={`http://localhost:3004/uploads/${blog.coverImage}`}
+            src={`${BACKEND}/uploads/${blog.coverImage}`}
             alt={blog.title}
             style={{ width: '100%', borderRadius: '12px', marginBottom: 30 }}
           />

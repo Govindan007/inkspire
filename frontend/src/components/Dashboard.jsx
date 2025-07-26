@@ -3,6 +3,8 @@ import Navbar2 from './Navbar2';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
+const BACKEND = import.meta.env.VITE_BACKEND_LINK;
+
 const Dashboard = () => {
   const navigate = useNavigate();
   const [blogs, setBlogs] = useState([]);
@@ -13,7 +15,7 @@ const Dashboard = () => {
   useEffect(() => {
     const fetchBlogs = async () => {
       try {
-        const res = await axios.get('http://localhost:3004/blogs');
+        const res = await axios.get(`${BACKEND}/blogs`);
         setBlogs(res.data.blogs || []);
       } catch (err) {
         console.error('Error fetching blogs:', err.message);
@@ -130,7 +132,7 @@ const Dashboard = () => {
               </div>
               {blog.coverImage && (
                 <img
-                  src={`http://localhost:3004/uploads/${blog.coverImage}`}
+                  src={`${BACKEND}/uploads/${blog.coverImage}`}
                   alt={blog.title}
                   style={{
                     width: '200px',

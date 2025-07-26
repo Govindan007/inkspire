@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 
+const BACKEND = import.meta.env.VITE_BACKEND_LINK;
+
 const BlogTable = () => {
   const [blogs, setBlogs] = useState([]);
 
@@ -9,7 +11,7 @@ const BlogTable = () => {
     if (!token) return;
 
     try {
-      const res = await axios.get('http://localhost:3004/admin/blogs', {
+      const res = await axios.get(`${BACKEND}/admin/blogs`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -32,7 +34,7 @@ const BlogTable = () => {
     if (!confirm) return;
 
     try {
-      await axios.delete(`http://localhost:3004/admin/blogs/${blogId}`, {
+      await axios.delete(`${BACKEND}/admin/blogs/${blogId}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },

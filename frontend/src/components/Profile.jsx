@@ -14,6 +14,8 @@ import Navbar2 from './Navbar2';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
+const BACKEND = import.meta.env.VITE_BACKEND_LINK;
+
 const Profile = () => {
   const navigate = useNavigate();
   const [user, setUser] = useState(null);
@@ -32,7 +34,7 @@ const Profile = () => {
   useEffect(() => {
     const fetchUserBlogs = async () => {
       try {
-        const res = await axios.get('http://localhost:3004/blogs');
+        const res = await axios.get(`${BACKEND}/blogs`);
         const allBlogs = res.data.blogs;
 
         const userBlogs = allBlogs.filter(
@@ -58,7 +60,7 @@ const Profile = () => {
 
     try {
       const token = localStorage.getItem('token');
-      await axios.delete(`http://localhost:3004/blogs/${id}`, {
+      await axios.delete(`${BACKEND}/blogs/${id}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
 
@@ -123,7 +125,7 @@ const Profile = () => {
                 <CardMedia
                   component="img"
                   height="120"
-                  image={`http://localhost:3004/uploads/${post.coverImage}`}
+                  image={`${BACKEND}/uploads/${post.coverImage}`}
                   alt={post.title}
                   sx={{ width: 180, ml: 2, borderRadius: 2 }}
                 />

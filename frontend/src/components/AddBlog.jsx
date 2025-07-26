@@ -12,6 +12,8 @@ import {
 } from '@mui/material';
 import { useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
+
+const BACKEND = import.meta.env.VITE_BACKEND_LINK;
 import Navbar2 from './Navbar2';
 
 const AddBlog = () => {
@@ -70,7 +72,7 @@ const AddBlog = () => {
       }
     };
 
-    const baseURL = 'http://localhost:3004/blogs/';
+    const baseURL = `${BACKEND}/blogs/`;
     const endpoint = isEdit ? `${baseURL}${location.state._id}` : baseURL;
 
     try {

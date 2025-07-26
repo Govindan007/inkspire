@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 
+const BACKEND = import.meta.env.VITE_BACKEND_LINK;
+
 const UsersTable = () => {
   const [users, setUsers] = useState([]);
   const [adminId, setAdminId] = useState(null);
@@ -17,7 +19,7 @@ const UsersTable = () => {
         const decodedPayload = JSON.parse(atob(base64));
         setAdminId(decodedPayload.id);
 
-        const res = await axios.get('http://localhost:3004/admin/users', {
+        const res = await axios.get(`${BACKEND}/admin/users`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         setUsers(res.data.users);
@@ -36,7 +38,7 @@ const UsersTable = () => {
     if (!window.confirm('Are you sure you want to delete this user?')) return;
 
     try {
-      await axios.delete(`http://localhost:3004/admin/users/${userId}`, {
+      await axios.delete(`${BACKEND}/admin/users/${userId}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setUsers(users.filter((user) => user._id !== userId));

@@ -2,6 +2,8 @@ import { Button, TextField, Typography } from '@mui/material';
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+
+const BACKEND = import.meta.env.VITE_BACKEND_LINK;
 import Navbar from './Navbar';
 import { Link } from 'react-router-dom';
 
@@ -16,7 +18,7 @@ const Login = () => {
 
   const submitHandler = async () => {
     try {
-      const res = await axios.post("http://localhost:3004/auth/login", inp);
+      const res = await axios.post(`${BACKEND}/auth/login`, inp);
 
       if (res.data.token) {
         localStorage.setItem("token", res.data.token);
